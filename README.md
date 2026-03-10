@@ -9,25 +9,32 @@ where choosing the right drink matters.
 
 # Rough Timeline:
 
-Week 1
-Finish proposal
-Research food and drink pairing basics
-Set up development environment
-Week 2
-Connect AI model
-Test basic food-to-drink prompts
-Week 3
-Build frontend interface
-Connect frontend and backend
-Week 4
-Improve recommendations
-Add rating system (could go from half to full stars)
-Week 5
-Combine all parts
-Debug and refine
-Week 6
-Conduct user testing
-Week 7
-Fix issues and finalize features
-Week 8
-Prepare slides and demo
+Week 1:
+- Finish proposal
+- Research food and drink pairing basics
+- Set up development environment
+
+Week 2:
+- Connect AI model
+- Test basic food-to-drink prompts
+
+Week 3:
+- Build frontend interface
+- Connect frontend and backend
+
+Week 4:
+- Improve recommendations
+- Add rating system (could go from half to full stars)
+
+Week 5:
+- Combine all parts
+- Debug and refine
+
+Week 6:
+- Conduct user testing
+
+Week 7:
+- Fix issues and finalize features
+
+Week 8:
+- Prepare slides and demo
