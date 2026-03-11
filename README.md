@@ -7,6 +7,27 @@ get helpful suggestions right away. Our project aims to create a system that rec
 will get suggestions that explain why a drink pairs well with their meal. This could be helpful for casual dining, date nights, or even professional settings 
 where choosing the right drink matters.
 
+# Questionnaire for gen ai capstone project:
+
+- What’s your diet like? (multiple choice)
+  (vegetarian, meats, seafood, vegan, etc.)
+- What type of drinks do you usually drink? ( multiple choice) 
+  ( type of drinks)
+- What type of alcohol do you like? (MC)
+  (list of alcohol like wine, sparkling, whiskey, rum, gin, etc.)
+- What type of alcohol? (MC)
+  (types of alcohol and cocktails)
+- style of alcohol?
+  (on the rocks, mixed with juice, etc.)
+- flavor preference? (multiple choice) 
+  ( list of different flavor categories)
+- On a scale of 1-5, how sweet or bitter do u like ur drink? ( 1 being sweet, 5 being bitter)
+  (can be a idc option at the bottom too)
+- drink temp preference? (MC)
+- Do you want a detailed description of the drinks?
+  ( yes, no, just a lil bit)
+
+
 # Rough Timeline:
 
 Week 1:
