@@ -1,16 +1,17 @@
 import os
 import json
+import re
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from dotenv import load_dotenv
-from openai import OpenAI
+from google import genai
 
 load_dotenv()
 
 app = Flask(__name__)
 CORS(app)
 
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 
 @app.route("/")
 def home():
@@ -42,16 +43,18 @@ def recommend():
     """
 
     try:
-        response = client.chat.completions.create(
-            model="gpt-4o-mini",
-            messages=[{"role": "user", "content": prompt}]
+        response = client.models.generate_content(
+            model="gemini-3-flash-preview",
+            contents=prompt,
         )
 
-        result_text = response.choices[0].message.content.strip()
+        result_text = response.text.strip()
 
-        # Try to parse JSON safely
-        import json
-        result_json = json.loads(result_text)
+        json_match = re.search(r"\{.*\}", result_text, re.DOTALL)
+        if not json_match:
+            raise ValueError("No valid JSON found in model response")
+
+        result_json = json.loads(json_match.group())
 
         return jsonify({
             "meal": meal,
@@ -61,17 +64,16 @@ def recommend():
     except Exception as e:
         print("Error:", e)
 
-        # fallback (so your app never breaks)
         fallback = [
             {
-                "drink": "Iced Tea",
-                "score": 7,
-                "reason": f"A safe and refreshing option for {meal}."
+                "drink": "Lemon Iced Tea",
+                "score": 8,
+                "reason": f"Lemon Iced Tea pairs nicely with {meal}."
             },
             {
                 "drink": "Sparkling Water",
-                "score": 6,
-                "reason": f"A neutral drink that pairs reasonably well with {meal}."
+                "score": 7,
+                "reason": f"Sparkling Water is a safe pairing for {meal}."
             }
         ]
 
