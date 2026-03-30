@@ -1,6 +1,8 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
 
 @app.route("/")
 def home():
@@ -11,7 +13,8 @@ def recommend():
     data = request.get_json()
     meal = data.get("meal", "")
 
-    mock_results = [
+    mock_results = [...]
+    """
         {
             "drink": "Thai Iced Tea",
             "score": 9,
@@ -23,6 +26,7 @@ def recommend():
             "reason": f"Sparkling Water with Lime refreshes your palate and works well with {meal}."
         }
     ]
+    """
 
     return jsonify({
         "meal": meal,
