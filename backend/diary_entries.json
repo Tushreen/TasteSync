@@ -1,0 +1,14 @@
+[
+    {
+        "meal": "pizza",
+        "drink": "wine",
+        "likedIt": "good",
+        "cost": "15",
+        "rating": "4.5",
+        "alcohol": "yes",
+        "abv": "12",
+        "notes": "bleh bleh",
+        "ingredients": "bleh bleh",
+        "date": "3/31/2026"
+    }
+]

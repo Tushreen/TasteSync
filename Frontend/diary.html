@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TasteSync Drink Diary</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="diary.html">Drink Diary</a>
+    </div>
+
+    <h1>Drink Diary</h1>
+    <p>Save your meal and drink pairings.</p>
+
+    <input type="text" id="meal" placeholder="Meal" />
+    <input type="text" id="drink" placeholder="Drink" />
+    <input type="text" id="likedIt" placeholder="How much did you like it?" />
+    <input type="text" id="cost" placeholder="Cost" />
+    <input type="text" id="rating" placeholder="Your rating" />
+    <input type="text" id="alcohol" placeholder="Alcohol? Yes or No" />
+    <input type="text" id="abv" placeholder="Alcohol %" />
+
+    <textarea id="notes" placeholder="Drink notes"></textarea>
+    <textarea id="ingredients" placeholder="Ingredients"></textarea>
+
+    <button onclick="saveDiaryEntry()">Save Entry</button>
+
+    <div id="diaryEntries"></div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
