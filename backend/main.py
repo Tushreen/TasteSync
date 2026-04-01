@@ -9,7 +9,7 @@ from google import genai
 load_dotenv()
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r"/*": {"origins": "*"}})
 
 client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 
@@ -110,7 +110,13 @@ def save_diary_entry():
         except FileNotFoundError:
             entries = []
 
-        new_entry["id"] = len(entries) + 1
+        # ✅ FIXED ID LOGIC
+        if entries:
+            max_id = max(entry.get("id", 0) for entry in entries)
+        else:
+            max_id = 0
+
+        new_entry["id"] = max_id + 1
         entries.append(new_entry)
 
         with open(DIARY_FILE, "w") as file:
@@ -123,7 +129,6 @@ def save_diary_entry():
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-
 
 @app.route("/diary/<int:entry_id>", methods=["DELETE"])
 def delete_diary_entry(entry_id):

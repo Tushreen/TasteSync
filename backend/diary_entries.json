@@ -1,14 +1,28 @@
 [
     {
-        "meal": "pizza",
-        "drink": "wine",
-        "likedIt": "good",
-        "cost": "15",
-        "rating": "4.5",
+        "meal": "sushi",
+        "drink": "sake",
+        "likedIt": "average",
+        "cost": "12",
+        "rating": "3.5",
         "alcohol": "yes",
         "abv": "12",
-        "notes": "bleh bleh",
-        "ingredients": "bleh bleh",
-        "date": "3/31/2026"
+        "notes": "n/a",
+        "ingredients": "n/a",
+        "date": "3/31/2026",
+        "id": 2
+    },
+    {
+        "meal": "pizza",
+        "drink": "soda",
+        "likedIt": "good",
+        "cost": "9",
+        "rating": "4",
+        "alcohol": "no",
+        "abv": "n/a",
+        "notes": "n/a",
+        "ingredients": "n/a",
+        "date": "3/31/2026",
+        "id": 3
     }
 ]

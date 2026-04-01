@@ -79,13 +79,20 @@ async function saveDiaryEntry() {
   };
 
   try {
-    await fetch("http://127.0.0.1:5000/diary", {
+    const response = await fetch("http://127.0.0.1:5000/diary", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
       },
       body: JSON.stringify(entry)
     });
+
+    const result = await response.json();
+    console.log("Save response:", result);
+
+    if (!response.ok) {
+      throw new Error(result.error || "Failed to save entry");
+    }
 
     alert("Saved!");
 
@@ -102,7 +109,7 @@ async function saveDiaryEntry() {
     loadDiary();
   } catch (error) {
     console.error("Error saving diary entry:", error);
-    alert("Could not save entry.");
+    alert("Could not save entry: " + error.message);
   }
 }
 
