@@ -111,3 +111,136 @@ button:hover {
 .delete-btn:hover {
   opacity: 0.9;
 }
+
+.faq-section {
+  margin-top: 30px;
+  text-align: left;
+}
+
+.faq-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.faq-card h2 {
+  margin-bottom: 10px;
+  font-size: 1.4rem;
+}
+
+.contact-section {
+  margin-top: 40px;
+  text-align: left;
+  background: #fff;
+  border-radius: 16px;
+  padding: 25px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.contact-form input,
+.contact-form textarea {
+  width: 80%;
+  padding: 14px;
+  margin-top: 15px;
+  border: 1px solid #ccc;
+  border-radius: 12px;
+  font-size: 1rem;
+}
+
+.contact-form textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.faq-section {
+  margin-top: 30px;
+  text-align: left;
+}
+
+.faq-item {
+  background: #ffffff;
+  border-radius: 18px;
+  margin-bottom: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  border: 1px solid #f1f1f1;
+}
+
+.faq-question {
+  width: 100%;
+  background: white;
+  border: none;
+  outline: none;
+  padding: 22px 24px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  text-align: left;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #111827;
+}
+
+.faq-question span {
+  font-size: 1.5rem;
+  font-weight: normal;
+  color: #f97316;
+}
+
+.faq-answer {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+  padding: 0 24px;
+}
+
+.faq-answer p {
+  margin: 0;
+  padding: 0 0 20px 0;
+  color: #4b5563;
+  line-height: 1.7;
+}
+
+.faq-item.active .faq-answer {
+  max-height: 220px;
+}
+
+.contact-section {
+  margin-top: 40px;
+  text-align: left;
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 28px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.contact-form input,
+.contact-form textarea {
+  width: 80%;
+  padding: 14px;
+  margin-top: 15px;
+  border: 1px solid #d1d5db;
+  border-radius: 14px;
+  font-size: 1rem;
+  background: #fff;
+}
+
+.contact-form textarea {
+  min-height: 120px;
+  resize: vertical;
+}

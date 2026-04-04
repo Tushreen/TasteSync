@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TasteSync FAQ</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="diary.html">Drink Diary</a>
+      <a href="faq.html">FAQ / Contact</a>
+    </div>
+
+    <h1>FAQ & Contact Us</h1>
+    <p>Learn more about TasteSync and how it works.</p>
+
+    <div class="faq-section">
+      <div class="faq-item">
+        <button class="faq-question">What is TasteSync?<span>+</span></button>
+        <div class="faq-answer">
+          <p>TasteSync is a food and drink pairing app that helps users discover drinks that go well with their meals. It gives pairing suggestions, explains why they work, and lets users save favorites in a drink diary.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question">How do I get personalized recommendations?<span>+</span></button>
+        <div class="faq-answer">
+          <p>You can enter a meal and receive suggested drink pairings. As the app grows, personalization can be improved using your drink diary, saved ratings, and future preference settings.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question">Is TasteSync free to use?<span>+</span></button>
+        <div class="faq-answer">
+          <p>Yes. TasteSync is currently a student project demo and is free to use.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question">Can I find non-alcoholic options?<span>+</span></button>
+        <div class="faq-answer">
+          <p>Yes. TasteSync can suggest non-alcoholic options like tea, juice, sparkling water, and mocktails.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question">How does the drink diary work?<span>+</span></button>
+        <div class="faq-answer">
+          <p>The drink diary lets you save your meal, drink, rating, cost, notes, ingredients, alcohol percentage, and more so you can look back at your pairings later.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question">What makes a good pairing?<span>+</span></button>
+        <div class="faq-answer">
+          <p>A good pairing either balances or complements the meal. For example, something sweet may soften spicy food, and something crisp can refresh the palate after rich dishes.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question">Can I save my search history?<span>+</span></button>
+        <div class="faq-answer">
+          <p>Not yet. Right now, TasteSync saves drink diary entries. Search history can be added in a future version.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question">How do I update my preferences?<span>+</span></button>
+        <div class="faq-answer">
+          <p>Preference settings are planned as a future feature. In later versions, users may be able to update taste preferences like sweetness, bitterness, and alcohol choices.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question">What if I can't find a specific food?<span>+</span></button>
+        <div class="faq-answer">
+          <p>Try entering a similar dish, a broader meal type, or the main ingredients. That usually helps the app generate better suggestions.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question">Are the recommendations suitable for fine dining?<span>+</span></button>
+        <div class="faq-answer">
+          <p>TasteSync is designed to give helpful suggestions for both casual meals and more formal dining. The recommendations are meant as guidance, not as a replacement for a professional sommelier.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="contact-section">
+      <h2>Contact Us</h2>
+      <p>Have feedback or ideas? Send us a message.</p>
+
+      <form class="contact-form">
+        <input type="text" placeholder="Your Name" />
+        <input type="email" placeholder="Your Email" />
+        <textarea placeholder="Your Message"></textarea>
+        <button type="submit">Send Message</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const faqQuestions = document.querySelectorAll(".faq-question");
+
+    faqQuestions.forEach((button) => {
+      button.addEventListener("click", () => {
+        const faqItem = button.parentElement;
+        faqItem.classList.toggle("active");
+
+        const icon = button.querySelector("span");
+        icon.textContent = faqItem.classList.contains("active") ? "−" : "+";
+      });
+    });
+  </script>
+</body>
+</html>
