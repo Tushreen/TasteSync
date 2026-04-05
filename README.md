@@ -7,6 +7,22 @@ get helpful suggestions right away. Our project aims to create a system that rec
 will get suggestions that explain why a drink pairs well with their meal. This could be helpful for casual dining, date nights, or even professional settings 
 where choosing the right drink matters.
 
+# Checklist:
+- setup backend (done)
+- setup frontend (done)
+- connect ai api key (done)
+- questionnaire
+- accounts
+- profile/ profile setting
+- homepage
+- image upload
+- Review past generated options
+- post drink review/preference/ how much you liked it
+- drink diary
+- FAQ/contacts (done)
+- various meals/drinks (page for checking out categories for meals and drinks)
+
+
 # Questionnaire for gen ai capstone project:
 
 - What’s your diet like? (multiple choice)

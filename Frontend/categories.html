@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TasteSync Categories</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="page-shell">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-icon">TS</div>
+        <div>
+          <h2>TasteSync</h2>
+          <p>Your Personal Drink Guide</p>
+        </div>
+      </div>
+
+      <nav class="top-nav">
+        <a href="index.html">Search</a>
+        <a href="diary.html">Diary</a>
+        <a href="categories.html" class="active-link">Categories</a>
+        <a href="faq.html">FAQ</a>
+      </nav>
+    </header>
+
+    <main class="categories-page">
+      <section class="hero-section">
+        <h1>Browse Categories</h1>
+        <p>Explore our collection of food and drink pairings</p>
+
+        <div class="toggle-row">
+          <div class="toggle-slider"></div>
+          <button class="toggle-btn active-toggle" onclick="showFoodCategories()">Food Categories</button>
+          <button class="toggle-btn" onclick="showDrinkCategories()">Drink Categories</button>
+        </div>
+      </section>
+
+      <section id="foodCategories">
+        <div class="category-card">
+          <h2><span class="category-icon">🍖</span> Meat & Poultry</h2>
+          <div class="item-grid">
+            <div class="category-item"><h3>Steak</h3><p>4 pairings</p></div>
+            <div class="category-item"><h3>Chicken</h3><p>4 pairings</p></div>
+            <div class="category-item"><h3>BBQ Ribs</h3><p>4 pairings</p></div>
+            <div class="category-item"><h3>Fried Chicken</h3><p>4 pairings</p></div>
+          </div>
+        </div>
+
+        <div class="category-card">
+          <h2><span class="category-icon">🐟</span> Seafood</h2>
+          <div class="item-grid">
+            <div class="category-item"><h3>Salmon</h3><p>4 pairings</p></div>
+            <div class="category-item"><h3>Sushi</h3><p>4 pairings</p></div>
+            <div class="category-item"><h3>Oysters</h3><p>4 pairings</p></div>
+          </div>
+        </div>
+
+        <div class="category-card">
+          <h2><span class="category-icon">🍝</span> Italian</h2>
+          <div class="item-grid">
+            <div class="category-item"><h3>Pizza</h3><p>4 pairings</p></div>
+            <div class="category-item"><h3>Pasta Carbonara</h3><p>3 pairings</p></div>
+            <div class="category-item"><h3>Pasta Marinara</h3><p>3 pairings</p></div>
+          </div>
+        </div>
+
+        <div class="category-card">
+          <h2><span class="category-icon">🌍</span> International</h2>
+          <div class="item-grid">
+            <div class="category-item"><h3>Tacos</h3><p>4 pairings</p></div>
+            <div class="category-item"><h3>Curry</h3><p>4 pairings</p></div>
+          </div>
+        </div>
+
+        <div class="category-card">
+          <h2><span class="category-icon">🍔</span> Casual Dining</h2>
+          <div class="item-grid">
+            <div class="category-item"><h3>Burger</h3><p>4 pairings</p></div>
+            <div class="category-item"><h3>Salad</h3><p>4 pairings</p></div>
+          </div>
+        </div>
+
+        <div class="category-card">
+          <h2><span class="category-icon">🍰</span> Dessert & Cheese</h2>
+          <div class="item-grid">
+            <div class="category-item"><h3>Chocolate Dessert</h3><p>4 pairings</p></div>
+            <div class="category-item"><h3>Cheese Board</h3><p>4 pairings</p></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="drinkCategories" class="hidden-section">
+        <div class="category-card purple-card">
+          <h2><span class="category-icon">🍷</span> Wine</h2>
+          <div class="item-grid">
+            <div class="drink-item purple-item">Cabernet Sauvignon</div>
+            <div class="drink-item purple-item">Malbec</div>
+            <div class="drink-item purple-item">Pinot Noir</div>
+            <div class="drink-item purple-item">Chardonnay</div>
+
+            <div class="drink-item purple-item">Sauvignon Blanc</div>
+            <div class="drink-item purple-item">Chianti</div>
+            <div class="drink-item purple-item">Lambrusco</div>
+            <div class="drink-item purple-item">Champagne</div>
+
+            <div class="drink-item purple-item">Riesling</div>
+            <div class="drink-item purple-item">Pinot Grigio</div>
+            <div class="drink-item purple-item">Viognier</div>
+            <div class="drink-item purple-item">Vermentino</div>
+
+            <div class="drink-item purple-item">Prosecco</div>
+            <div class="drink-item purple-item">Gewürztraminer</div>
+            <div class="drink-item purple-item">Port Wine</div>
+            <div class="drink-item purple-item">Rosé</div>
+
+            <div class="drink-item purple-item">Zinfandel</div>
+            <div class="drink-item purple-item">Muscadet</div>
+            <div class="drink-item purple-item">Chablis</div>
+            <div class="drink-item purple-item">Sangiovese</div>
+
+            <div class="drink-item purple-item">Barbera</div>
+          </div>
+        </div>
+
+        <div class="category-card green-card">
+          <h2><span class="category-icon">☕</span> Non-Alcoholic</h2>
+          <div class="item-grid">
+            <div class="drink-item green-item">Green Tea</div>
+            <div class="drink-item green-item">Horchata</div>
+            <div class="drink-item green-item">Mango Lassi</div>
+            <div class="drink-item green-item">Apple Cider</div>
+
+            <div class="drink-item green-item">Sparkling Water with Lemon</div>
+            <div class="drink-item green-item">Cola</div>
+            <div class="drink-item green-item">Sweet Tea</div>
+          </div>
+        </div>
+
+        <div class="category-card yellow-card">
+          <h2><span class="category-icon">🍺</span> Beer</h2>
+          <div class="item-grid">
+            <div class="drink-item yellow-item">Porter or Stout</div>
+            <div class="drink-item yellow-item">Wheat Beer</div>
+            <div class="drink-item yellow-item">IPA</div>
+            <div class="drink-item yellow-item">Lager</div>
+
+            <div class="drink-item yellow-item">Pale Ale</div>
+            <div class="drink-item yellow-item">Mexican Lager</div>
+            <div class="drink-item yellow-item">Stout</div>
+            <div class="drink-item yellow-item">Pilsner</div>
+
+            <div class="drink-item yellow-item">Amber Ale</div>
+          </div>
+        </div>
+
+        <div class="category-card pink-card">
+          <h2><span class="category-icon">🍸</span> Cocktails</h2>
+          <div class="item-grid">
+            <div class="drink-item pink-item">Old Fashioned</div>
+            <div class="drink-item pink-item">Margarita</div>
+            <div class="drink-item pink-item">Paloma</div>
+            <div class="drink-item pink-item">Espresso Martini</div>
+          </div>
+        </div>
+
+        <div class="category-card orange-card">
+          <h2><span class="category-icon">🥃</span> Spirits</h2>
+          <div class="item-grid">
+            <div class="drink-item orange-item">Sake</div>
+            <div class="drink-item orange-item">Bourbon</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="stats-row">
+        <div class="stat-box">
+          <h3 class="orange-text">16</h3>
+          <p>Food Items</p>
+        </div>
+        <div class="stat-box">
+          <h3 class="pink-text">62</h3>
+          <p>Total Pairings</p>
+        </div>
+        <div class="stat-box">
+          <h3 class="purple-text">43</h3>
+          <p>Unique Drinks</p>
+        </div>
+        <div class="stat-box">
+          <h3 class="green-text">5</h3>
+          <p>Drink Categories</p>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const foodSection = document.getElementById("foodCategories");
+    const drinkSection = document.getElementById("drinkCategories");
+    const toggleButtons = document.querySelectorAll(".toggle-btn");
+    const slider = document.querySelector(".toggle-slider");
+
+    function showFoodCategories() {
+      foodSection.classList.remove("hidden-section");
+      drinkSection.classList.add("hidden-section");
+
+      toggleButtons[0].classList.add("active-toggle");
+      toggleButtons[1].classList.remove("active-toggle");
+
+      slider.style.transform = "translateX(0)";
+    }
+
+    function showDrinkCategories() {
+      drinkSection.classList.remove("hidden-section");
+      foodSection.classList.add("hidden-section");
+
+      toggleButtons[1].classList.add("active-toggle");
+      toggleButtons[0].classList.remove("active-toggle");
+
+      slider.style.transform = "translateX(100%)";
+    }
+  </script>
+</body>
+</html>
