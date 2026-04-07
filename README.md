@@ -18,12 +18,12 @@ where choosing the right drink matters.
 - image upload
 - Review past generated options
 - post drink review/preference/ how much you liked it
-- drink diary
+- drink diary (done)
 - FAQ/contacts (done)
-- various meals/drinks (page for checking out categories for meals and drinks)
+- various meals/drinks (page for checking out categories for meals and drinks) (done)
 
 
-# Questionnaire for gen ai capstone project:
+# Questionnaire for Gen AI Capstone Project:
 
 - What’s your diet like? (multiple choice)
   (vegetarian, meats, seafood, vegan, etc.)
