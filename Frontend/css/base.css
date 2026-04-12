@@ -5,6 +5,24 @@ body {
   padding: 0;
 }
 
+body::before {
+  content: "";
+
+  background-image: url('https://www.nyctourism.com/_next/image/?url=https%3A%2F%2Fimages.ctfassets.net%2F1aemqu6a6t65%2F2vLR3o8y91z2831k3Fh6Fm%2F1ea8c325689401073669efa554d1d4fe%2FDin-Tai-Fung-Manhattan-NYC-Photo-Jason-Varney.jpg&w=3840&q=75');
+  background-size: cover;
+  background-position: center;
+  
+  opacity: 0.6; 
+  
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1; 
+}
+
+
 h1 {
   font-size: 3rem;
   margin-bottom: 10px;

@@ -16,7 +16,6 @@ client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 DIARY_FILE = "backend/diary_entries.json"
 
 
-@app.route("/")
 def home():
     return "TasteSync backend is running!"
 
