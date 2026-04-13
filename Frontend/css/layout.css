@@ -4,27 +4,38 @@
   background: white;
   padding: 40px;
   border-radius: 20px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 16px rgba(232, 9, 9, 0.08);
   text-align: center;
 }
 
 .page-shell {
-  background: linear-gradient(180deg, #f8f5ef 0%, #fcf7fb 100%);
   min-height: 100vh;
 }
 
 .topbar {
   background: white;
   border-bottom: 1px solid #e5e7eb;
-  padding: 20px 32px;
+  padding: 90px 70px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
+  
 }
 
 .top-nav {
   display: flex;
   gap: 24px;
   flex-wrap: wrap;
+}
+
+.topbar .container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.nav-links {
+  display: flex;
+  gap: 20px;
 }
