@@ -33,7 +33,14 @@
     <textarea id="notes" placeholder="Drink notes"></textarea>
     <textarea id="ingredients" placeholder="Ingredients"></textarea>
 
+    <form action="/upload" method="post" enctype="multipart/form-data">
+  
+    <input type="file" name="image" accept="image/*">
+ 
+    <button type="submit">Upload Image</button>
+
     <button onclick="saveDiaryEntry()">Save Entry</button>
+</form>
 
     <div id="diaryEntries"></div>
   </div>
