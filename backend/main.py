@@ -1,7 +1,7 @@
 import os
 import json
 import re
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 from dotenv import load_dotenv
 from google import genai
@@ -15,9 +15,20 @@ client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 
 DIARY_FILE = "backend/diary_entries.json"
 
+UPLOAD_FOLDER = 'static/uploads/'
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
+FRONTEND_PATH = os.path.abspath(
+    os.path.join(os.path.dirname(__file__), "../Frontend")
+)
+
+@app.route("/")
 def home():
-    return "TasteSync backend is running!"
+    return send_from_directory(FRONTEND_PATH, "index.html")
+
+@app.route("/<path:path>")
+def static_files(path):
+    return send_from_directory(FRONTEND_PATH, path)   
 
 
 @app.route("/recommend", methods=["POST"])
@@ -109,7 +120,6 @@ def save_diary_entry():
         except FileNotFoundError:
             entries = []
 
-        # ✅ FIXED ID LOGIC
         if entries:
             max_id = max(entry.get("id", 0) for entry in entries)
         else:
@@ -144,6 +154,19 @@ def delete_diary_entry(entry_id):
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+@app.route("/upload", methods=['POST'])
+def upload_image():
+    if 'image' not in request.files:
+        return "No file part"
+
+    file = request.files['image']
+
+    if file:
+    
+        path = os.path.join(UPLOAD_FOLDER, file.filename)
+        file.save(path)
+        return f"File saved to {path}"
+    return "No file selected"
 
 if __name__ == "__main__":
     app.run(debug=True)
