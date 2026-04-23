@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TasteSync Login</title>
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/pages.css">
+  <link rel="stylesheet" href="css/responsive.css">
+  <link rel="stylesheet" href="css/profile.css">
+  <link rel="stylesheet" href="css/auth.css">
+</head>
+<body>
+  <div class="container">
+
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="categories.html">Categories</a>
+      <a href="diary.html">Drink Diary</a>
+      <a href="faq.html">FAQ</a>
+      <a href="profile.html">Profile</a>
+      <a href="auth.html">Login</a>
+    </div>
+
+    <h1 id="formTitle">Login</h1>
+    <p>Access your TasteSync account</p>
+
+    <!-- LOGIN FORM -->
+    <div id="loginForm">
+      <input type="text" id="loginUsername" placeholder="Username" />
+      <input type="password" id="loginPassword" placeholder="Password" />
+
+      <button onclick="login()">Login</button>
+
+      <p class="switch-text">
+        Don't have an account?
+        <span onclick="showRegister()">Register</span>
+      </p>
+    </div>
+
+    <!-- REGISTER FORM -->
+    <div id="registerForm" style="display: none;">
+      <input type="text" id="regUsername" placeholder="Username" />
+      <input type="password" id="regPassword" placeholder="Password" />
+
+      <button onclick="register()">Register</button>
+
+      <p class="switch-text">
+        Already have an account?
+        <span onclick="showLogin()">Login</span>
+      </p>
+    </div>
+
+  </div>
+
+  <script src="script.js"></script>
+
+  <script>
+    function showRegister() {
+      document.getElementById("loginForm").style.display = "none";
+      document.getElementById("registerForm").style.display = "block";
+      document.getElementById("formTitle").innerText = "Register";
+    }
+
+    function showLogin() {
+      document.getElementById("registerForm").style.display = "none";
+      document.getElementById("loginForm").style.display = "block";
+      document.getElementById("formTitle").innerText = "Login";
+    }
+  </script>
+
+</body>
+</html>

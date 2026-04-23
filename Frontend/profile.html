@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TasteSync Profile</title>
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/pages.css">
+  <link rel="stylesheet" href="css/responsive.css">
+  <link rel="stylesheet" href="css/profile.css">
+  <link rel="stylesheet" href="css/auth.css">
+</head>
+<body>
+  <div class="container">
+
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="diary.html">Drink Diary</a>
+      <a href="categories.html">Categories</a>
+      <a href="faq.html">FAQ / Contact</a>
+      <a href="profile.html" class="active-link">Profile</a>
+      <a href="auth.html">Login</a>
+    </div>
+
+    <h1>My Profile</h1>
+    <p>Update your account details</p>
+
+    <!-- PROFILE IMAGE -->
+    <div class="avatar-section">
+      <img id="avatarPreview" src="" alt="Profile Picture" />
+      <input type="file" id="avatarInput" accept="image/*" />
+    </div>
+
+    <!-- FORM -->
+    <input id="username" placeholder="Username" disabled />
+    <input id="first_name" placeholder="First Name" />
+    <input id="last_name" placeholder="Last Name" />
+    <input id="email" placeholder="Email" />
+
+    <textarea id="bio" placeholder="Your bio"></textarea>
+    <input id="favorite_drink" placeholder="Favorite drink" />
+
+    <button class="profile-btn" onclick="updateProfile()">Save Profile</button>
+
+  </div>
+
+  <script src="script.js"></script>
+
+  <script>
+    window.onload = loadProfile;
+  </script>
+</body>
+</html>

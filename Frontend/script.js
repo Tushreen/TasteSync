@@ -129,3 +129,104 @@ async function deleteDiaryEntry(entryId) {
 if (document.getElementById("diaryEntries")) {
   loadDiary();
 }
+
+
+// Register user
+async function register() {
+  const username = document.getElementById("regUsername").value;
+  const password = document.getElementById("regPassword").value;
+
+  const res = await fetch("http://127.0.0.1:5000/register", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ username, password })
+  });
+
+  const data = await res.json();
+  alert(data.message || data.error);
+
+  if (data.message) {
+    showLogin();
+  }
+}
+
+// Login
+async function login() {
+  const username = document.getElementById("loginUsername").value;
+  const password = document.getElementById("loginPassword").value;
+
+  const res = await fetch("http://127.0.0.1:5000/login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ username, password })
+  });
+
+  const data = await res.json();
+
+  if (data.user) {
+    localStorage.setItem("userId", data.user.id);
+    alert("Login successful!");
+
+    // redirect to profile page
+    window.location.href = "profile.html";
+  } else {
+    alert(data.error);
+  }
+}
+
+// Go to the profile
+async function loadProfile() {
+  const userId = localStorage.getItem("userId");
+
+  const res = await fetch(`http://127.0.0.1:5000/profile/${userId}`);
+  const data = await res.json();
+
+  document.getElementById("first_name").value = data.first_name || "";
+  document.getElementById("last_name").value = data.last_name || "";
+  document.getElementById("email").value = data.email || "";
+  document.getElementById("bio").value = data.bio || "";
+  document.getElementById("favorite_drink").value = data.favorite_drink || "";
+
+  if (data.avatar) {
+    document.getElementById("avatarPreview").src = data.avatar;
+  }
+}
+
+// Update profile
+async function updateProfile() {
+  const userId = localStorage.getItem("userId");
+
+  const data = {
+    first_name: document.getElementById("first_name").value,
+    last_name: document.getElementById("last_name").value,
+    email: document.getElementById("email").value,
+    bio: document.getElementById("bio").value,
+    favorite_drink: document.getElementById("favorite_drink").value,
+    avatar: avatarBase64
+  };
+
+  const res = await fetch(`http://127.0.0.1:5000/profile/${userId}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data)
+  });
+
+  const result = await res.json();
+  alert(result.message);
+}
+
+let avatarBase64 = "";
+
+document.getElementById("avatarInput").addEventListener("change", function () {
+  const file = this.files[0];
+  const reader = new FileReader();
+
+  reader.onloadend = function () {
+    avatarBase64 = reader.result;
+    document.getElementById("avatarPreview").src = avatarBase64;
+  };
+
+  if (file) {
+    reader.readAsDataURL(file);
+  }
+});

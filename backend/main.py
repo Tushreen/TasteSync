@@ -168,5 +168,117 @@ def upload_image():
         return f"File saved to {path}"
     return "No file selected"
 
+# user and profile
+USERS_FILE = "backend/users.json"
+def load_users():
+    try:
+        with open(USERS_FILE, "r") as f:
+            return json.load(f)
+    except:
+        return []
+
+def save_users(users):
+    with open(USERS_FILE, "w") as f:
+        json.dump(users, f, indent=4)
+
+@app.route("/register", methods=["POST"])
+def register():
+    data = request.get_json()
+
+    username = data.get("username")
+    password = data.get("password")
+
+    users = load_users()
+
+    # check if user exists
+    for user in users:
+        if user["username"] == username:
+            return jsonify({"error": "User already exists"}), 400
+
+    new_user = {
+        "id": len(users) + 1,
+        "username": username,
+        "password": password,
+        "profile": {
+            "first_name": "",
+            "last_name": "",
+            "email": "",
+            "bio": "",
+            "favorite_drink": "",
+            "avatar": ""  # store image as base64 string
+        }
+    }
+
+    users.append(new_user)
+    save_users(users)
+
+    return jsonify({"message": "User registered successfully"})
+
+# Login
+@app.route("/login", methods=["POST"])
+def login():
+    data = request.get_json()
+
+    username = data.get("username")
+    password = data.get("password")
+
+    users = load_users()
+
+    for user in users:
+        if user["username"] == username and user["password"] == password:
+            return jsonify({
+                "message": "Login successful",
+                "user": {
+                    "id": user["id"],
+                    "username": user["username"]
+                }
+            })
+
+    return jsonify({"error": "Invalid credentials"}), 401
+
+@app.route("/profile/<int:user_id>", methods=["GET"])
+def get_profile(user_id):
+    users = load_users()
+
+    for user in users:
+        if user["id"] == user_id:
+            return jsonify(user["profile"])
+
+    return jsonify({"error": "User not found"}), 404
+
+@app.route("/profile/<int:user_id>", methods=["PUT"])
+def update_profile(user_id):
+    data = request.get_json()
+    users = load_users()
+
+    for user in users:
+        if user["id"] == user_id:
+            user["profile"]["first_name"] = data.get("first_name", "")
+            user["profile"]["last_name"] = data.get("last_name", "")
+            user["profile"]["email"] = data.get("email", "")
+            user["profile"]["bio"] = data.get("bio", "")
+            user["profile"]["favorite_drink"] = data.get("favorite_drink", "")
+            user["profile"]["avatar"] = data.get("avatar", "")
+
+            save_users(users)
+            return jsonify({"message": "Profile updated"})
+
+    return jsonify({"error": "User not found"}), 404
+
+@app.route("/change-password/<int:user_id>", methods=["PUT"])
+def change_password(user_id):
+    data = request.get_json()
+    users = load_users()
+
+    for user in users:
+        if user["id"] == user_id:
+            user["password"] = data.get("new_password")
+            save_users(users)
+            return jsonify({"message": "Password updated"})
+
+    return jsonify({"error": "User not found"}), 404
+
+
+
 if __name__ == "__main__":
     app.run(debug=True)
