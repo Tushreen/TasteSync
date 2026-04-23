@@ -12,8 +12,8 @@ where choosing the right drink matters.
 - setup frontend (done)
 - connect ai api key (done)
 - questionnaire
-- accounts (done but not merge yet)
-- profile/ profile setting (done but not merge yet)
+- accounts (Done)
+- profile/ profile setting (Done)
 - homepage
 - image upload
 - Review past generated options
