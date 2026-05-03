@@ -14,8 +14,8 @@ where choosing the right drink matters.
 - questionnaire
 - accounts (Done)
 - profile/ profile setting (Done)
-- homepage
-- image upload
+- homepage (Done)
+- image upload (Done)
 - Review past generated options
 - post drink review/preference/ how much you liked it
 - drink diary (done)
