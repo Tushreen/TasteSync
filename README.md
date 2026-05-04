@@ -11,7 +11,7 @@ where choosing the right drink matters.
 - setup backend (done)
 - setup frontend (done)
 - connect ai api key (done)
-- questionnaire
+- questionnaire (Done)
 - accounts (Done)
 - profile/ profile setting (Done)
 - homepage (Done)
