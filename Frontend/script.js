@@ -1,5 +1,20 @@
 async function getRecommendations() {
   const meal = document.getElementById("mealInput").value;
+
+  const data = {
+    meal: meal,
+    diet: document.getElementById("diet")?.value,
+    drinkType: document.getElementById("drinkType")?.value,
+    alcohol: document.getElementById("alcoholPref")?.value,
+    cocktail: document.getElementById("cocktail")?.value,
+    style: document.getElementById("style")?.value,
+    flavor: document.getElementById("flavor")?.value,
+    scale: document.getElementById("scale")?.value,
+    temp: document.getElementById("temp")?.value,
+    desc: document.getElementById("desc")?.value
+  };
+
+
   const resultsDiv = document.getElementById("results");
 
   resultsDiv.innerHTML = "<p>Loading...</p>";
@@ -230,3 +245,4 @@ document.getElementById("avatarInput").addEventListener("change", function () {
     reader.readAsDataURL(file);
   }
 });
+

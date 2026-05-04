@@ -97,6 +97,7 @@ Return ONLY valid JSON in this exact format:
         })
 
 
+
 @app.route("/diary", methods=["GET"])
 def get_diary_entries():
     try:
@@ -277,6 +278,131 @@ def change_password(user_id):
             return jsonify({"message": "Password updated"})
 
     return jsonify({"error": "User not found"}), 404
+
+
+# Function use in questionnaire
+@app.route("/recommend-ai", methods=["POST"])
+def generate_ai_drink_recommendations():
+    data = request.json
+
+    prompt = f"""
+        You are a beverage AI expert.
+        
+        User preferences:
+        - Diet: {data.get('diet')}
+        - Drink Type: {data.get('drinkType')}
+        - Alcohol: {data.get('alcohol')}
+        - Cocktail: {data.get('cocktail')}
+        - Style: {data.get('style')}
+        - Flavor: {data.get('flavor')}
+        - Sweet-Bitter Scale: {data.get('scale')}
+        - Temperature: {data.get('temp')}
+        
+        Return ONLY valid JSON:
+        {{
+          "recommendations": [
+            {{
+              "drink": "string",
+              "score": 1,
+              "reason": "string"
+            }},
+            {{
+              "drink": "string",
+              "score": 1,
+              "reason": "string"
+            }},
+            {{
+              "drink": "string",
+              "score": 1,
+              "reason": "string"
+            }}
+          ]
+        }}
+        """
+
+    try:
+        response = client.models.generate_content(
+            model="gemini-2.5-flash",
+            contents=prompt,
+        )
+
+        text = response.text.strip()
+
+        print("RAW GEMINI OUTPUT:\n", text)  # <--- IMPORTANT DEBUG
+
+        text = text.replace("```json", "").replace("```", "").strip()
+
+        result = json.loads(text)
+
+        return jsonify({
+            "mode": "taste_intelligence",
+            "recommendations": result["recommendations"]
+        })
+
+    except Exception as e:
+        print("ERROR:", e)
+
+        return jsonify({
+            "mode": "taste_intelligence",
+            "recommendations": [
+                {
+                    "drink": "Citrus Basil Spritz",
+                    "score": 9,
+                    "reason": "Bright citrus notes with herbal basil freshness. Great for light and refreshing taste preferences."
+                },
+                {
+                    "drink": "Smoked Vanilla Old Fashioned",
+                    "score": 8,
+                    "reason": "Deep smoky sweetness balanced with smooth vanilla warmth. Ideal for bold and classic profiles."
+                },
+                {
+                    "drink": "Hibiscus Ginger Cooler",
+                    "score": 8,
+                    "reason": "Floral hibiscus combined with spicy ginger creates a refreshing and slightly tangy profile."
+                }
+            ]
+        })
+
+
+
+# HELPER FUNCTIONS for generate_ai_drink_recommendations();
+def build_taste_profile(data):
+    prompt = f"""
+        You are a beverage psychology AI.
+        Return ONLY valid JSON.
+        User:
+        - Diet: {data.get('diet')}
+        - Drink Type: {data.get('drinkType')}
+        - Alcohol: {data.get('alcohol')}
+        - Flavor: {data.get('flavor')}
+        - Sweet-Bitter Scale: {data.get('scale')}
+        - Style: {data.get('style')}
+        
+        Format:
+        {{
+          "category": "",
+          "description": "",
+          "recommendation_style": ""
+        }}
+        """
+    response = client.models.generate_content(
+        model="gemini-2.5-flash",
+        contents=prompt,
+    )
+
+    text = response.text.strip()
+    # Clean code blocks
+    text = text.replace("```json", "").replace("```", "").strip()
+
+    json_match = re.search(r"\{[\s\S]*\}", text)
+    if not json_match:
+        raise ValueError("Invalid taste profile JSON")
+
+    return json.loads(json_match.group())
+
+
+
+
 
 
 

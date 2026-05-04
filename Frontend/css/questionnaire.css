@@ -1,0 +1,94 @@
+
+.container {
+  max-width: 900px;
+  margin: 60px auto;
+  background: white;
+  padding: 40px;
+  border-radius: 20px;
+  box-shadow: 0 4px 16px rgba(200, 51, 51, 0.08);
+  text-align: center;
+}
+
+/* Form layout */
+#questionnaireForm {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  text-align: left;
+  margin-top: 20px;
+  text-align: center;
+}
+
+/* Labels */
+#questionnaireForm label {
+  font-weight: 600;
+  margin-top: 10px;
+  color: #333;
+}
+
+/* Inputs + selects */
+#questionnaireForm select,
+#questionnaireForm input {
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  font-size: 14px;
+  transition: 0.2s;
+  outline: none;
+}
+
+/* Focus effect (important for UX polish) */
+#questionnaireForm select:focus,
+#questionnaireForm input:focus {
+  border-color: #c83333;
+  box-shadow: 0 0 0 2px rgba(200, 51, 51, 0.15);
+}
+
+/* Button */
+#questionnaireForm button {
+  margin-top: 20px;
+  padding: 10px;
+  border: none;
+  border-radius: 10px;
+  background-color: #000000;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+#questionnaireForm button:hover {
+  background-color: #222222;
+}
+
+/* Result cards (match diary/profile feel) */
+.result-card {
+  background: #f9fafb;
+  padding: 16px;
+  margin-top: 15px;
+  border-radius: 12px;
+  border-left: 5px solid #c83333;
+  text-align: center;
+}
+
+.result-card h3 {
+  margin-bottom: 5px;
+}
+
+/* Page title spacing consistency */
+h1 {
+  margin-bottom: 10px;
+}
+
+p {
+  color: #666;
+  margin-bottom: 20px;
+}
+
+#questionnaireForm select,
+#questionnaireForm input {
+  width: 100%;
+  max-width: 420px;   /* controls long dropdowns */
+  margin: 0 auto;     /* centers them */
+  display: block;
+}
