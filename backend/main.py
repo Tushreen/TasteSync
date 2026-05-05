@@ -98,41 +98,24 @@ Return ONLY valid JSON in this exact format:
         })
 
 
-
+# Get diary entries
 @app.route("/diary", methods=["GET"])
 def get_diary_entries():
     try:
         with open(DIARY_FILE, "r") as file:
             entries = json.load(file)
-        return jsonify(entries)
     except FileNotFoundError:
         return jsonify([])
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+
+    return jsonify(entries)
 
 
+
+# Save diary entry
 @app.route("/diary", methods=["POST"])
 def save_diary_entry():
     try:
         data = request.get_json()
-
-        new_entry = {
-            "meal": data.get("meal"),
-            "drink": data.get("drink"),
-            "rating": data.get("rating"),
-            "likedIt": data.get("likedIt"),
-
-            "cost": data.get("cost"),
-            "alcohol": data.get("alcohol"),
-            "abv": data.get("abv"),
-            "notes": data.get("notes"),
-            "ingredients": data.get("ingredients"),
-            "date": data.get("date"),
-
-            # NEW FIELDS (IMPORTANT)
-            "thumbUp": 0,
-            "thumbDown": 0
-        }
 
         try:
             with open(DIARY_FILE, "r") as file:
@@ -145,7 +128,24 @@ def save_diary_entry():
         else:
             max_id = 0
 
-        new_entry["id"] = max_id + 1
+        new_entry = {
+            "id": max_id + 1,
+            "user_id": data.get("user_id"),
+
+            "meal": data.get("meal"),
+            "drink": data.get("drink"),
+            "likedIt": data.get("likedIt"),
+            "cost": data.get("cost"),
+            "alcohol": data.get("alcohol"),
+            "abv": data.get("abv"),
+            "notes": data.get("notes"),
+            "ingredients": data.get("ingredients"),
+            "date": data.get("date"),
+
+            "thumbUp": 0,
+            "thumbDown": 0
+        }
+
         entries.append(new_entry)
 
         with open(DIARY_FILE, "w") as file:
@@ -159,6 +159,8 @@ def save_diary_entry():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+
+#  Delete diary entry
 @app.route("/diary/<int:entry_id>", methods=["DELETE"])
 def delete_diary_entry(entry_id):
     try:
@@ -185,119 +187,10 @@ def upload_image():
     
         path = os.path.join(UPLOAD_FOLDER, file.filename)
         file.save(path)
-        return f"File saved to {path}"
+        return jsonify({
+            "imageUrl": f"/static/uploads/{file.filename}"
+        })
     return "No file selected"
-
-# user and profile
-USERS_FILE = "backend/users.json"
-def load_users():
-    try:
-        with open(USERS_FILE, "r") as f:
-            return json.load(f)
-    except:
-        return []
-
-def save_users(users):
-    with open(USERS_FILE, "w") as f:
-        json.dump(users, f, indent=4)
-
-@app.route("/register", methods=["POST"])
-def register():
-    data = request.get_json()
-
-    username = data.get("username")
-    password = data.get("password")
-
-    users = load_users()
-
-    # check if user exists
-    for user in users:
-        if user["username"] == username:
-            return jsonify({"error": "User already exists"}), 400
-
-    new_user = {
-        "id": len(users) + 1,
-        "username": username,
-        "password": password,
-        "profile": {
-            "first_name": "",
-            "last_name": "",
-            "email": "",
-            "bio": "",
-            "favorite_drink": "",
-            "avatar": ""  # store image as base64 string
-        }
-    }
-
-    users.append(new_user)
-    save_users(users)
-
-    return jsonify({"message": "User registered successfully"})
-
-# Login
-@app.route("/login", methods=["POST"])
-def login():
-    data = request.get_json()
-
-    username = data.get("username")
-    password = data.get("password")
-
-    users = load_users()
-
-    for user in users:
-        if user["username"] == username and user["password"] == password:
-            return jsonify({
-                "message": "Login successful",
-                "user": {
-                    "id": user["id"],
-                    "username": user["username"]
-                }
-            })
-
-    return jsonify({"error": "Invalid credentials"}), 401
-
-@app.route("/profile/<int:user_id>", methods=["GET"])
-def get_profile(user_id):
-    users = load_users()
-
-    for user in users:
-        if user["id"] == user_id:
-            return jsonify(user["profile"])
-
-    return jsonify({"error": "User not found"}), 404
-
-@app.route("/profile/<int:user_id>", methods=["PUT"])
-def update_profile(user_id):
-    data = request.get_json()
-    users = load_users()
-
-    for user in users:
-        if user["id"] == user_id:
-            user["profile"]["first_name"] = data.get("first_name", "")
-            user["profile"]["last_name"] = data.get("last_name", "")
-            user["profile"]["email"] = data.get("email", "")
-            user["profile"]["bio"] = data.get("bio", "")
-            user["profile"]["favorite_drink"] = data.get("favorite_drink", "")
-            user["profile"]["avatar"] = data.get("avatar", "")
-
-            save_users(users)
-            return jsonify({"message": "Profile updated"})
-
-    return jsonify({"error": "User not found"}), 404
-
-@app.route("/change-password/<int:user_id>", methods=["PUT"])
-def change_password(user_id):
-    data = request.get_json()
-    users = load_users()
-
-    for user in users:
-        if user["id"] == user_id:
-            user["password"] = data.get("new_password")
-            save_users(users)
-            return jsonify({"message": "Password updated"})
-
-    return jsonify({"error": "User not found"}), 404
-
 
 # Function use in questionnaire
 @app.route("/recommend-ai", methods=["POST"])
@@ -496,7 +389,7 @@ def review_feedback(entry_id):
 @app.route("/diary/<int:entry_id>/thumb", methods=["POST"])
 def update_thumb(entry_id):
     data = request.get_json()
-    action = data.get("action")  # "up" or "down"
+    action = data.get("action")
 
     try:
         with open(DIARY_FILE, "r") as f:
@@ -555,5 +448,168 @@ def thumb_down(entry_id):
     return jsonify({"message": "thumb down updated"})
 
 
+
+
+# user and profile
+# USERS FILE
+USERS_FILE = os.path.join(os.path.dirname(__file__), "users.json")
+
+# create file if it doesn't exist
+if not os.path.exists(USERS_FILE):
+    with open(USERS_FILE, "w") as f:
+        json.dump([], f)
+
+
+# HELPERS
+def load_users():
+    try:
+        with open(USERS_FILE, "r") as f:
+            return json.load(f)
+    except FileNotFoundError:
+        return []
+
+
+def save_users(users):
+    with open(USERS_FILE, "w") as f:
+        json.dump(users, f, indent=4)
+
+
+# REGISTER
+@app.route("/register", methods=["POST"])
+def register():
+    data = request.get_json()
+
+    username = (data.get("username") or "").strip()
+    password = (data.get("password") or "").strip()
+
+    if not username or not password:
+        return jsonify({"error": "Username and password required"}), 400
+
+    users = load_users()
+
+    # check if user exists
+    for user in users:
+        if user["username"] == username:
+            return jsonify({"error": "User already exists"}), 400
+
+    new_user = {
+        "id": len(users) + 1,
+        "username": username,
+        "password": password,
+        "profile": {
+            "first_name": "",
+            "last_name": "",
+            "email": "",
+            "bio": "",
+            "favorite_drink": "",
+            "avatar": ""
+        }
+    }
+
+    users.append(new_user)
+    save_users(users)
+
+    return jsonify({"message": "User registered successfully"}), 201
+
+
+# LOGIN
+@app.route("/login", methods=["POST"])
+def login():
+    data = request.get_json()
+
+    username = (data.get("username") or "").strip()
+    password = (data.get("password") or "").strip()
+
+    users = load_users()
+
+    for user in users:
+        if user["username"] == username and user["password"] == password:
+            return jsonify({
+                "message": "Login successful",
+                "user": {
+                    "id": user["id"],
+                    "username": user["username"]
+                }
+            })
+
+    return jsonify({"error": "Invalid credentials"}), 401
+
+
+# GET PROFILE
+@app.route("/profile/<int:user_id>", methods=["GET"])
+def get_profile(user_id):
+    users = load_users()
+
+    for user in users:
+        if user.get("id") == user_id:
+            return jsonify(user.get("profile", {}))
+
+    return jsonify({"error": "User not found"}), 404
+
+
+# UPDATE PROFILE
+@app.route("/upload-profile", methods=["POST"])
+def profile_upload_image():
+    if 'image' not in request.files:
+        return jsonify({"error": "No file"}), 400
+
+    file = request.files['image']
+
+    filename = file.filename
+    path = os.path.join(UPLOAD_FOLDER, filename)
+
+    file.save(path)
+
+    return jsonify({
+        "imageUrl": f"/static/uploads/{filename}"
+    })
+
+# Update Profile
+@app.route("/profile/<int:user_id>", methods=["PUT"])
+def update_profile(user_id):
+    data = request.get_json()
+    users = load_users()
+
+    for user in users:
+        if user["id"] == user_id:
+            profile = user.get("profile", {})
+
+            profile["first_name"] = data.get("first_name", profile.get("first_name", ""))
+            profile["last_name"] = data.get("last_name", profile.get("last_name", ""))
+            profile["email"] = data.get("email", profile.get("email", ""))
+            profile["bio"] = data.get("bio", profile.get("bio", ""))
+            profile["favorite_drink"] = data.get("favorite_drink", profile.get("favorite_drink", ""))
+            profile["avatar"] = data.get("avatar", profile.get("avatar", ""))
+
+            user["profile"] = profile
+            save_users(users)
+
+            return jsonify({"message": "Profile updated", "profile": profile})
+
+    return jsonify({"error": "User not found"}), 404
+
+
+
+
+# CHANGE PASSWORD
+@app.route("/change-password/<int:user_id>", methods=["PUT"])
+def change_password(user_id):
+    data = request.get_json()
+    users = load_users()
+
+    for user in users:
+        if user["id"] == user_id:
+            user["password"] = data.get("new_password", "")
+            save_users(users)
+            return jsonify({"message": "Password updated"})
+
+    return jsonify({"error": "User not found"}), 404
+
+
+# RUN SERVER
 if __name__ == "__main__":
     app.run(debug=True)
+
+
+# if __name__ == "__main__":
+#     app.run(debug=True)

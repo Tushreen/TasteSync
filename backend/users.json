@@ -1,0 +1,15 @@
+[
+    {
+        "id": 1,
+        "username": "lucy",
+        "password": "123",
+        "profile": {
+            "first_name": "Lucy",
+            "last_name": "C",
+            "email": "test@gmail.com",
+            "bio": "love puppies and drink",
+            "favorite_drink": "orange juice",
+            "avatar": "/static/uploads/5A24966F-C1DC-4F21-8CF8-749607174192_1_105_c.jpeg"
+        }
+    }
+]

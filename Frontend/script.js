@@ -1,31 +1,23 @@
+// GLOBAL USER
+const user = JSON.parse(localStorage.getItem("user")) || null;
+
+// GLOBAL USER HELPER
+function getCurrentUser() {
+  return JSON.parse(localStorage.getItem("user"));
+}
+
+// RECOMMENDATIONS
 async function getRecommendations() {
   const meal = document.getElementById("mealInput").value;
 
-  const data = {
-    meal: meal,
-    diet: document.getElementById("diet")?.value,
-    drinkType: document.getElementById("drinkType")?.value,
-    alcohol: document.getElementById("alcoholPref")?.value,
-    cocktail: document.getElementById("cocktail")?.value,
-    style: document.getElementById("style")?.value,
-    flavor: document.getElementById("flavor")?.value,
-    scale: document.getElementById("scale")?.value,
-    temp: document.getElementById("temp")?.value,
-    desc: document.getElementById("desc")?.value
-  };
-
-
   const resultsDiv = document.getElementById("results");
-
   resultsDiv.innerHTML = "<p>Loading...</p>";
 
   try {
     const response = await fetch("http://127.0.0.1:5000/recommend", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ meal: meal })
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ meal })
     });
 
     const data = await response.json();
@@ -40,47 +32,17 @@ async function getRecommendations() {
       `).join("")}
     `;
   } catch (error) {
-    console.error("Error getting recommendations:", error);
-    resultsDiv.innerHTML = "<p>Something went wrong. Please try again.</p>";
+    console.error(error);
+    resultsDiv.innerHTML = "<p>Error loading recommendations</p>";
   }
 }
 
-async function loadDiary() {
-  try {
-    const response = await fetch("http://127.0.0.1:5000/diary");
-    const entries = await response.json();
 
-    const container = document.getElementById("diaryEntries");
-    if (!container) return;
-
-    container.innerHTML = "";
-
-    entries.reverse().forEach(entry => {
-      container.innerHTML += `
-        <div class="diary-card">
-          <h2>${entry.drink}</h2>
-          <p class="subtext">Paired with ${entry.meal}</p>
-
-          <p><strong>Rating:</strong> ${entry.rating}</p>
-          <p><strong>Liked:</strong> ${entry.likedIt}</p>
-          <p><strong>Cost:</strong> $${entry.cost}</p>
-          <p><strong>Alcohol:</strong> ${entry.alcohol} (${entry.abv}%)</p>
-
-          <p><strong>Notes:</strong> ${entry.notes}</p>
-          <p><strong>Ingredients:</strong> ${entry.ingredients}</p>
-
-          <p class="entry-date">${entry.date}</p>
-          <button class="delete-btn" onclick="deleteDiaryEntry(${entry.id})">Delete</button>
-        </div>
-      `;
-    });
-  } catch (error) {
-    console.error("Error loading diary:", error);
-  }
-}
-
+// SAVE DIARY ENTRY
 async function saveDiaryEntry() {
   const entry = {
+    user_id: user ? user.id : null,
+
     meal: document.getElementById("meal").value,
     drink: document.getElementById("drink").value,
     likedIt: document.getElementById("likedIt").value,
@@ -94,78 +56,83 @@ async function saveDiaryEntry() {
   };
 
   try {
-    const response = await fetch("http://127.0.0.1:5000/diary", {
+    const res = await fetch("http://127.0.0.1:5000/diary", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(entry)
     });
 
-    const result = await response.json();
-    console.log("Save response:", result);
+    const result = await res.json();
 
-    if (!response.ok) {
-      throw new Error(result.error || "Failed to save entry");
-    }
+    if (!res.ok) throw new Error(result.error);
 
     alert("Saved!");
 
-    document.getElementById("meal").value = "";
-    document.getElementById("drink").value = "";
-    document.getElementById("likedIt").value = "";
-    document.getElementById("cost").value = "";
-    document.getElementById("rating").value = "";
-    document.getElementById("alcohol").value = "";
-    document.getElementById("abv").value = "";
-    document.getElementById("notes").value = "";
-    document.getElementById("ingredients").value = "";
-
     loadDiary();
-  } catch (error) {
-    console.error("Error saving diary entry:", error);
-    alert("Could not save entry: " + error.message);
+  } catch (err) {
+    console.error(err);
+    alert("Could not save entry: " + err.message);
   }
 }
 
+
+// LOAD DIARY
+async function loadDiary() {
+  try {
+    const res = await fetch("http://127.0.0.1:5000/diary");
+    if (!res.ok) {
+        throw new Error("Failed to load diary");
+    }
+
+    const entries = await res.json();
+
+    const container = document.getElementById("diaryEntries");
+    if (!container) return;
+
+    container.innerHTML = "";
+
+    entries.reverse().forEach(entry => {
+      container.innerHTML += `
+        <div class="diary-card">
+          <h2>${entry.drink}</h2>
+          <p>Meal: ${entry.meal}</p>
+          <p>Rating: ${entry.rating}</p>
+
+          <p>
+            👍 ${entry.thumbUp || 0}
+            👎 ${entry.thumbDown || 0}
+          </p>
+
+          <button onclick="deleteDiaryEntry(${entry.id})">Delete</button>
+        </div>
+      `;
+    });
+
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+
+// DELETE DIARY (SECURED)
 async function deleteDiaryEntry(entryId) {
   try {
     await fetch(`http://127.0.0.1:5000/diary/${entryId}`, {
-      method: "DELETE"
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        user_id: user ? user.id : null
+      })
     });
 
     loadDiary();
-  } catch (error) {
-    console.error("Error deleting diary entry:", error);
-    alert("Could not delete entry.");
+  } catch (err) {
+    console.error(err);
   }
 }
 
-if (document.getElementById("diaryEntries")) {
-  loadDiary();
-}
 
-
-// Register user
-async function register() {
-  const username = document.getElementById("regUsername").value;
-  const password = document.getElementById("regPassword").value;
-
-  const res = await fetch("http://127.0.0.1:5000/register", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ username, password })
-  });
-
-  const data = await res.json();
-  alert(data.message || data.error);
-
-  if (data.message) {
-    showLogin();
-  }
-}
-
-// Login
+// LOGIN
 async function login() {
   const username = document.getElementById("loginUsername").value;
   const password = document.getElementById("loginPassword").value;
@@ -179,22 +146,102 @@ async function login() {
   const data = await res.json();
 
   if (data.user) {
-    localStorage.setItem("userId", data.user.id);
+    localStorage.setItem("user", JSON.stringify(data.user)); // FIXED
     alert("Login successful!");
-
-    // redirect to profile page
     window.location.href = "profile.html";
   } else {
     alert(data.error);
   }
 }
 
-// Go to the profile
-async function loadProfile() {
-  const userId = localStorage.getItem("userId");
+// Register
+async function register() {
+  const username = document.getElementById("regUsername").value;
+  const password = document.getElementById("regPassword").value;
 
-  const res = await fetch(`http://127.0.0.1:5000/profile/${userId}`);
+  const res = await fetch("http://127.0.0.1:5000/register", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ username, password })
+  });
+
   const data = await res.json();
+
+  console.log("REGISTER RESPONSE:", data);
+
+  if (res.ok) {
+    alert("Registration successful!");
+    showLogin();
+  } else {
+    alert(data.error || "Registration failed");
+  }
+}
+
+// Update Profile
+async function updateProfile() {
+  const user = getCurrentUser();
+
+  if (!user) {
+    alert("Not logged in");
+    return;
+  }
+
+  const body = {
+    first_name: document.getElementById("first_name").value,
+    last_name: document.getElementById("last_name").value,
+    email: document.getElementById("email").value,
+    bio: document.getElementById("bio").value,
+    favorite_drink: document.getElementById("favorite_drink").value,
+    avatar: window.avatarBase64 || ""
+  };
+
+  console.log("SENDING PROFILE:", body);
+
+  try {
+    const res = await fetch(`http://127.0.0.1:5000/profile/${user.id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body)
+    });
+
+    const text = await res.text();
+    console.log("RAW RESPONSE:", text);
+
+    let data;
+    try {
+      data = JSON.parse(text);
+    } catch {
+      throw new Error("Server did not return JSON");
+    }
+
+    if (!res.ok) {
+      throw new Error(data.error || "Profile update failed");
+    }
+
+    alert("Profile updated!");
+    return data;
+
+  } catch (err) {
+    console.error("UPDATE ERROR:", err);
+    alert(err.message);
+  }
+}
+
+
+
+// Load Profile
+async function loadProfile() {
+  const user = getCurrentUser();
+
+  if (!user) {
+    alert("Not logged in");
+    return;
+  }
+
+  const res = await fetch(`http://127.0.0.1:5000/profile/${user.id}`);
+  const data = await res.json();
+
+  document.getElementById("usernameDisplay").value = user.username;
 
   document.getElementById("first_name").value = data.first_name || "";
   document.getElementById("last_name").value = data.last_name || "";
@@ -207,81 +254,109 @@ async function loadProfile() {
   }
 }
 
-// Update profile
-async function updateProfile() {
-  const userId = localStorage.getItem("userId");
 
-  const data = {
-    first_name: document.getElementById("first_name").value,
-    last_name: document.getElementById("last_name").value,
-    email: document.getElementById("email").value,
-    bio: document.getElementById("bio").value,
-    favorite_drink: document.getElementById("favorite_drink").value,
-    avatar: avatarBase64
-  };
 
-  const res = await fetch(`http://127.0.0.1:5000/profile/${userId}`, {
-    method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data)
+// IMAGE HELPERS
+function compressImage(base64, quality = 0.6) {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.src = base64;
+
+    img.onload = () => {
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
+
+      // resize image (smaller avatar = smaller JSON)
+      canvas.width = 200;
+      canvas.height = 200;
+
+      ctx.drawImage(img, 0, 0, 200, 200);
+
+      const compressed = canvas.toDataURL("image/jpeg", quality);
+      resolve(compressed);
+    };
   });
-
-  const result = await res.json();
-  alert(result.message);
 }
 
-let avatarBase64 = "";
 
-document.getElementById("avatarInput").addEventListener("change", function () {
-  const file = this.files[0];
-  const reader = new FileReader();
+// AVATAR UPLOAD HANDLER
+document.getElementById("avatarInput").addEventListener("change", async function (e) {
+  const file = e.target.files[0];
+  if (!file) return;
 
-  reader.onloadend = function () {
-    avatarBase64 = reader.result;
-    document.getElementById("avatarPreview").src = avatarBase64;
-  };
+  const formData = new FormData();
+  formData.append("image", file);
 
-  if (file) {
-    reader.readAsDataURL(file);
-  }
+  const res = await fetch("http://127.0.0.1:5000/upload", {
+    method: "POST",
+    body: formData
+  });
+
+  const data = await res.json();
+
+  document.getElementById("avatarPreview").src = data.imageUrl;
+
+  // store URL instead of base64
+  window.avatarBase64 = data.imageUrl;
 });
 
-async function postNewReview() {
-  console.log("Submit clicked"); // debug
 
-  const rating = document.getElementById("rating").value;
-  const liked = document.getElementById("likedIt").value;
-  const notes = document.getElementById("notes").value;
-  const drink = document.getElementById("drinkName").value;
 
-  const entry = {
-    meal: "AI Recommendation",
-    drink: drink,
-    likedIt: liked,
-    cost: "0",
-    rating: rating,
-    alcohol: "unknown",
-    abv: "n/a",
-    notes: notes,
-    ingredients: "AI generated",
-    date: new Date().toLocaleDateString()
-  };
 
-  try {
-    const res = await fetch("http://127.0.0.1:5000/diary", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(entry)
-    });
 
-    const result = await res.json();
-    console.log(result);
 
-    alert("Review saved!");
-  } catch (err) {
-    console.error(err);
-    alert("Failed to save review");
+// Change password
+async function changePassword() {
+  const user = JSON.parse(localStorage.getItem("user"));
+
+  if (!user) {
+    alert("Not logged in");
+    return;
   }
+
+  const newPassword = document.getElementById("newPassword").value;
+  const confirmPassword = document.getElementById("confirmPassword").value;
+
+  if (!newPassword || !confirmPassword) {
+    alert("Please fill both fields");
+    return;
+  }
+
+  if (newPassword !== confirmPassword) {
+    alert("Passwords do not match");
+    return;
+  }
+
+  const res = await fetch(`http://127.0.0.1:5000/change-password/${user.id}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ new_password: newPassword })
+  });
+
+  const data = await res.json();
+
+  if (res.ok) {
+    alert("Password updated successfully");
+
+    document.getElementById("newPassword").value = "";
+    document.getElementById("confirmPassword").value = "";
+  } else {
+    alert(data.error || "Failed to update password");
+  }
+}
+
+// Log out
+function logout() {
+  localStorage.removeItem("user");
+  alert("Logged out");
+  window.location.href = "auth.html";
+}
+
+
+
+
+
+// LOAD DIARY ON PAGE LOAD
+if (document.getElementById("diaryEntries")) {
+  loadDiary();
 }

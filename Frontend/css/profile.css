@@ -60,3 +60,13 @@
 .avatar-section input {
   width: auto;
 }
+
+.profile-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.logout-btn {
+  background-color: black;
+}

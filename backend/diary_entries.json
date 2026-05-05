@@ -10,8 +10,8 @@
         "notes": "n/a",
         "ingredients": "n/a",
         "date": "3/31/2026",
-        "id": 2,
-        "thumbUp": 1,
+        "id": 1,
+        "thumbUp": 3,
         "thumbDown": 0
     },
     {
@@ -25,9 +25,9 @@
         "notes": "n/a",
         "ingredients": "n/a",
         "date": "3/31/2026",
-        "id": 3,
-        "thumbUp": 3,
-        "thumbDown": 0
+        "id": 2,
+        "thumbUp": 4,
+        "thumbDown": 1
     },
     {
         "meal": "white toast",
@@ -40,8 +40,8 @@
         "notes": "Natural and 100% juice",
         "ingredients": "user review",
         "date": "5/4/2026",
-        "id": 4,
-        "thumbUp": 6,
+        "id": 3,
+        "thumbUp": 8,
         "thumbDown": 1
     },
     {
@@ -55,7 +55,7 @@
         "notes": "Smooth and warm pairing, very balanced.",
         "ingredients": "rice, yeast",
         "date": "3/31/2026",
-        "id": 1,
+        "id": 4,
         "thumbUp": 3,
         "thumbDown": 0
     },
@@ -70,7 +70,7 @@
         "notes": "Cleans palate perfectly between bites.",
         "ingredients": "tea leaves",
         "date": "4/03/2026",
-        "id": 3,
+        "id": 5,
         "thumbUp": 4,
         "thumbDown": 0
     },
@@ -85,9 +85,9 @@
         "notes": "Heavy but satisfying pairing.",
         "ingredients": "hops, barley",
         "date": "4/05/2026",
-        "id": 4,
-        "thumbUp": 2,
-        "thumbDown": 2
+        "id": 6,
+        "thumbUp": 6,
+        "thumbDown": 3
     },
     {
         "meal": "pasta",
@@ -100,8 +100,8 @@
         "notes": "Perfect Italian pairing.",
         "ingredients": "grapes",
         "date": "4/06/2026",
-        "id": 5,
-        "thumbUp": 6,
-        "thumbDown": 0
+        "id": 7,
+        "thumbUp": 9,
+        "thumbDown": 1
     }
 ]

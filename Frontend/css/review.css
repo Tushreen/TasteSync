@@ -90,19 +90,25 @@
 
 /* FEEDBACK BUTTONS */
 .feedback-buttons {
-  margin-top: 10px;
   display: flex;
-  gap: 10px;
+  gap: 15px;
+  margin-top: 10px;
+  font-size: 14px;
 }
 
-.feedback-buttons button {
-  font-size: 18px;
+.thumb {
   cursor: pointer;
-  border: none;
-  background: none;
+  user-select: none;
+  color: #444;
   transition: 0.2s;
 }
 
-.feedback-buttons button:hover {
-  transform: scale(1.3);
+.thumb:hover {
+  color: #000;
+  transform: scale(1.05);
+}
+
+.thumb span {
+  margin-left: 4px;
+  font-weight: bold;
 }

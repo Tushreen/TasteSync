@@ -19,7 +19,7 @@
 <body>
   <div class="container">
 
-    <!-- NAVIGATION -->
+    <!-- NAV -->
     <div class="nav-links">
       <a href="index.html">Home</a>
       <a href="questionnaire.html">Questionnaire</a>
@@ -34,13 +34,9 @@
     <h1>Drink Reviews</h1>
     <p>See your past drink suggestions and post reviews.</p>
 
-    <!-- PAST AI SUGGESTIONS -->
-<!--    <div id="pastSuggestions">-->
-<!--      <h2>Past AI Suggestions</h2>-->
-<!--    </div>-->
-
     <!-- REVIEW FORM -->
-    <div id="newReview" class="review-section">
+      <div id="newReview" class="review-section">
+
       <h2>Post a Drink Review</h2>
 
       <input type="text" id="newMeal" placeholder="Meal it was paired with" />
@@ -56,7 +52,6 @@
         <span data-value="5">☆</span>
       </div>
 
-      <!-- hidden value -->
       <input type="hidden" id="newRating" />
 
       <label>Did you like it?</label>
@@ -69,20 +64,20 @@
 
       <textarea id="newNotes" placeholder="Notes about the drink"></textarea>
 
-      <!-- SUBMIT BUTTON -->
       <button class="profile-btn" onclick="postNewReview()">
         Submit Review
       </button>
+
     </div>
 
-    <!-- ALL REVIEWS -->
+    <!-- REVIEWS LIST -->
     <div id="reviewsList">
-      <h2>Your Reviews</h2>
+        <h2>Your Reviews</h2>
     </div>
 
   </div>
 
-  <!-- JS FILE -->
+  <!-- JS MUST BE LAST -->
   <script src="review.js"></script>
 
 </body>

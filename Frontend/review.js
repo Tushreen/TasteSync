@@ -1,25 +1,40 @@
-// STAR RATING SYSTEM
-const stars = document.querySelectorAll("#starRating span");
-const ratingInput = document.getElementById("newRating");
+document.addEventListener("DOMContentLoaded", () => {
 
-stars.forEach(star => {
-  star.addEventListener("click", () => {
-    const value = Number(star.getAttribute("data-value"));
-    ratingInput.value = value;
+  // STAR RATING SYSTEM
+  const stars = document.querySelectorAll("#starRating span");
+  const ratingInput = document.getElementById("newRating");
 
-    // fill stars correctly
-    stars.forEach(s => {
-      const starValue = Number(s.getAttribute("data-value"));
-      s.textContent = starValue <= value ? "★" : "☆";
+  if (stars && stars.length > 0 && ratingInput) {
+
+    stars.forEach(star => {
+      star.addEventListener("click", () => {
+
+        const value = Number(star.dataset.value);
+        ratingInput.value = value;
+
+        stars.forEach(s => {
+          const starValue = Number(s.dataset.value);
+          s.textContent = starValue <= value ? "★" : "☆";
+        });
+
+      });
     });
-  });
+  } else {
+    console.log("⭐ Star rating system not found on this page");
+  }
+
+  // LOAD REVIEWS
+  if (typeof loadReviews === "function") {
+    loadReviews();
+  } else {
+    console.log("⚠ loadReviews not defined on this page");
+  }
+
 });
 
 
 // SUBMIT REVIEW
 async function postNewReview() {
-  console.log("Submit clicked");
-
   const entry = {
     meal: document.getElementById("newMeal").value,
     drink: document.getElementById("newDrink").value,
@@ -28,7 +43,6 @@ async function postNewReview() {
     notes: document.getElementById("newNotes").value,
     date: new Date().toLocaleDateString(),
 
-    // IMPORTANT: initialize counters
     thumbUp: 0,
     thumbDown: 0
   };
@@ -45,24 +59,23 @@ async function postNewReview() {
       body: JSON.stringify(entry)
     });
 
-    const result = await res.json();
-    console.log(result);
+    await res.json();
 
     alert("Review saved!");
 
-    // clear form
     document.getElementById("newMeal").value = "";
     document.getElementById("newDrink").value = "";
+    document.getElementById("newLiked").value = "";
     document.getElementById("newNotes").value = "";
     document.getElementById("newRating").value = "";
 
-    stars.forEach(s => s.textContent = "☆");
+    document.querySelectorAll("#starRating span")
+      .forEach(s => s.textContent = "☆");
 
     loadReviews();
 
   } catch (err) {
     console.error(err);
-    alert("Failed to save review");
   }
 }
 
@@ -70,49 +83,64 @@ async function postNewReview() {
 // LOAD REVIEWS
 async function loadReviews() {
   try {
+    console.log("Loading reviews...");
+
     const res = await fetch("http://127.0.0.1:5000/diary");
     const data = await res.json();
 
+    console.log("DATA:", data);
+
     const container = document.getElementById("reviewsList");
 
-    container.innerHTML = `<h2>Your Reviews</h2>`;
+    if (!container) {
+      console.error("reviewsList missing in HTML");
+      return;
+    }
 
-    data.reverse().forEach(entry => {
-      container.innerHTML += `
-        <div class="result-card" id="review-${entry.id}">
+    container.innerHTML = "<h2>Your Reviews</h2>";
 
-          <h3>${entry.drink} (${entry.rating}/5)</h3>
+    if (!Array.isArray(data) || data.length === 0) {
+      container.innerHTML += "<p>No reviews found.</p>";
+      return;
+    }
 
-          <p><strong>Meal:</strong> ${entry.meal}</p>
-          <p><strong>Liked:</strong> ${entry.likedIt}</p>
-          <p>${entry.notes}</p>
+    data.reverse().forEach((entry, index) => {
+      try {
+        container.innerHTML += `
+          <div class="result-card">
 
-          <!-- 👍👎 SECTION -->
-          <div class="feedback-buttons">
+            <h3>${entry.drink || "Unknown drink"}</h3>
 
-          <div class="feedback-item">
-            <button onclick="reviewFeedback(${entry.id}, 'like')">👍</button>
-            <span>${entry.thumbUp || 0}</span>
+            <p><strong>Meal:</strong> ${entry.meal || "-"}</p>
+            <p><strong>Rating:</strong> ${entry.rating || "-"}</p>
+
+            <p><strong>Notes:</strong> ${entry.notes || ""}</p>
+
+            <div class="feedback-buttons">
+
+              <span onclick="reviewFeedback(${entry.id}, 'like')">
+                👍 ${entry.thumbUp ?? 0}
+              </span>
+
+              <span onclick="reviewFeedback(${entry.id}, 'down')">
+                👎 ${entry.thumbDown ?? 0}
+              </span>
+            </div>
+
           </div>
-
-          <div class="feedback-item">
-            <button onclick="reviewFeedback(${entry.id}, 'dislike')">👎</button>
-            <span>${entry.thumbDown || 0}</span>
-          </div>
-
-        </div>
-
-        <p class="entry-date">${entry.date}</p>
-      `;
+        `;
+      } catch (err) {
+        console.error("Error rendering entry:", entry, err);
+      }
     });
 
   } catch (err) {
-    console.error("Error loading reviews:", err);
+    console.error("Failed to load reviews:", err);
   }
 }
 
 
-// THUMB FEEDBACK
+// THUMBS
 function reviewFeedback(id, type) {
   fetch(`http://127.0.0.1:5000/diary/${id}/thumb`, {
     method: "POST",
@@ -120,11 +148,15 @@ function reviewFeedback(id, type) {
     body: JSON.stringify({
       action: type === "like" ? "up" : "down"
     })
-  }).then(() => {
-    loadReviews();
-  });
+  })
+  .then(res => res.json())
+  .then(data => {
+    console.log("thumb response:", data);
+
+    // small delay ensures file write completes
+    setTimeout(() => {
+      loadReviews();
+    }, 100);
+  })
+  .catch(err => console.error(err));
 }
-
-
-// AUTO LOAD
-window.onload = loadReviews;
