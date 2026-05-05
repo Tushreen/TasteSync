@@ -13,7 +13,8 @@ CORS(app, resources={r"/*": {"origins": "*"}})
 
 client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 
-DIARY_FILE = "backend/diary_entries.json"
+# DIARY_FILE = "backend/diary_entries.json"
+DIARY_FILE = "diary_entries.json"
 
 UPLOAD_FOLDER = 'static/uploads/'
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
@@ -113,7 +114,25 @@ def get_diary_entries():
 @app.route("/diary", methods=["POST"])
 def save_diary_entry():
     try:
-        new_entry = request.get_json()
+        data = request.get_json()
+
+        new_entry = {
+            "meal": data.get("meal"),
+            "drink": data.get("drink"),
+            "rating": data.get("rating"),
+            "likedIt": data.get("likedIt"),
+
+            "cost": data.get("cost"),
+            "alcohol": data.get("alcohol"),
+            "abv": data.get("abv"),
+            "notes": data.get("notes"),
+            "ingredients": data.get("ingredients"),
+            "date": data.get("date"),
+
+            # NEW FIELDS (IMPORTANT)
+            "thumbUp": 0,
+            "thumbDown": 0
+        }
 
         try:
             with open(DIARY_FILE, "r") as file:
@@ -401,9 +420,139 @@ def build_taste_profile(data):
     return json.loads(json_match.group())
 
 
+# Review
+@app.route("/review", methods=["POST"])
+def add_review():
+    data = request.get_json()
+
+    # Load existing diary entries
+    try:
+        with open(DIARY_FILE, "r") as f:
+            entries = json.load(f)
+    except FileNotFoundError:
+        entries = []
+
+    # Assign new ID
+    max_id = max([entry.get("id", 0) for entry in entries], default=0)
+    new_entry = {
+        "id": max_id + 1,
+        "user_id": data.get("user_id", 0),
+        "meal": data.get("meal", ""),
+        "drink": data.get("drink", ""),
+        "likedIt": data.get("likedIt", ""),
+        "cost": data.get("cost", ""),
+        "rating": data.get("rating", ""),
+        "alcohol": data.get("alcohol", ""),
+        "abv": data.get("abv", ""),
+        "notes": data.get("notes", ""),
+        "ingredients": data.get("ingredients", ""),
+        "date": data.get("date", "")
+    }
+
+    entries.append(new_entry)
+
+    with open(DIARY_FILE, "w") as f:
+        json.dump(entries, f, indent=4)
+
+    return jsonify({"message": "Review saved", "entry": new_entry}), 201
+
+
+# Get post reviews for a user
+@app.route("/reviews/<int:user_id>", methods=["GET"])
+def get_reviews(user_id):
+    try:
+        with open(DIARY_FILE, "r") as f:
+            entries = json.load(f)
+    except FileNotFoundError:
+        entries = []
+
+    user_reviews = [e for e in entries if e.get("user_id") == user_id]
+    return jsonify(user_reviews)
 
 
 
+# Review feedback
+@app.route("/diary/<int:entry_id>/feedback", methods=["POST"])
+def review_feedback(entry_id):
+    data = request.get_json()
+
+    try:
+        with open(DIARY_FILE, "r") as f:
+            entries = json.load(f)
+
+        for entry in entries:
+            if entry["id"] == entry_id:
+                entry["feedback"] = data.get("feedback")
+
+        with open(DIARY_FILE, "w") as f:
+            json.dump(entries, f, indent=4)
+
+        return jsonify({"message": "Feedback updated"})
+    except Exception as e:
+        return jsonify({"error": str(e)})
+
+
+# Count thumb up and thumb down
+@app.route("/diary/<int:entry_id>/thumb", methods=["POST"])
+def update_thumb(entry_id):
+    data = request.get_json()
+    action = data.get("action")  # "up" or "down"
+
+    try:
+        with open(DIARY_FILE, "r") as f:
+            entries = json.load(f)
+
+        for entry in entries:
+            if entry["id"] == entry_id:
+
+                # initialize if missing
+                if "thumbUp" not in entry:
+                    entry["thumbUp"] = 0
+                if "thumbDown" not in entry:
+                    entry["thumbDown"] = 0
+
+                if action == "up":
+                    entry["thumbUp"] += 1
+                elif action == "down":
+                    entry["thumbDown"] += 1
+
+        with open(DIARY_FILE, "w") as f:
+            json.dump(entries, f, indent=4)
+
+        return jsonify({"message": "updated"})
+
+    except Exception as e:
+        return jsonify({"error": str(e)})
+
+
+@app.route("/review/thumb-up/<int:entry_id>", methods=["POST"])
+def thumb_up(entry_id):
+    with open(DIARY_FILE, "r") as f:
+        entries = json.load(f)
+
+    for entry in entries:
+        if entry["id"] == entry_id:
+            entry["thumbUp"] = entry.get("thumbUp", 0) + 1
+
+    with open(DIARY_FILE, "w") as f:
+        json.dump(entries, f, indent=4)
+
+    return jsonify({"message": "thumb up updated"})
+
+
+@app.route("/review/thumb-down/<int:entry_id>", methods=["POST"])
+def thumb_down(entry_id):
+    with open(DIARY_FILE, "r") as f:
+        entries = json.load(f)
+
+    for entry in entries:
+        if entry["id"] == entry_id:
+            entry["thumbDown"] = entry.get("thumbDown", 0) + 1
+
+    with open(DIARY_FILE, "w") as f:
+        json.dump(entries, f, indent=4)
+
+    return jsonify({"message": "thumb down updated"})
 
 
 if __name__ == "__main__":

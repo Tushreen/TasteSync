@@ -246,3 +246,42 @@ document.getElementById("avatarInput").addEventListener("change", function () {
   }
 });
 
+async function postNewReview() {
+  console.log("Submit clicked"); // debug
+
+  const rating = document.getElementById("rating").value;
+  const liked = document.getElementById("likedIt").value;
+  const notes = document.getElementById("notes").value;
+  const drink = document.getElementById("drinkName").value;
+
+  const entry = {
+    meal: "AI Recommendation",
+    drink: drink,
+    likedIt: liked,
+    cost: "0",
+    rating: rating,
+    alcohol: "unknown",
+    abv: "n/a",
+    notes: notes,
+    ingredients: "AI generated",
+    date: new Date().toLocaleDateString()
+  };
+
+  try {
+    const res = await fetch("http://127.0.0.1:5000/diary", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(entry)
+    });
+
+    const result = await res.json();
+    console.log(result);
+
+    alert("Review saved!");
+  } catch (err) {
+    console.error(err);
+    alert("Failed to save review");
+  }
+}

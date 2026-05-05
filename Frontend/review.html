@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TasteSync Drink Reviews</title>
+
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/pages.css">
+  <link rel="stylesheet" href="css/responsive.css">
+  <link rel="stylesheet" href="css/profile.css">
+  <link rel="stylesheet" href="css/auth.css">
+  <link rel="stylesheet" href="css/questionnaire.css">
+  <link rel="stylesheet" href="css/review.css">
+</head>
+
+<body>
+  <div class="container">
+
+    <!-- NAVIGATION -->
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="questionnaire.html">Questionnaire</a>
+      <a href="diary.html">Drink Diary</a>
+      <a href="faq.html">FAQ / Contact</a>
+      <a href="categories.html">Categories</a>
+      <a href="profile.html">Profile</a>
+      <a href="auth.html">Login</a>
+      <a href="review.html">Review</a>
+    </div>
+
+    <h1>Drink Reviews</h1>
+    <p>See your past drink suggestions and post reviews.</p>
+
+    <!-- PAST AI SUGGESTIONS -->
+<!--    <div id="pastSuggestions">-->
+<!--      <h2>Past AI Suggestions</h2>-->
+<!--    </div>-->
+
+    <!-- REVIEW FORM -->
+    <div id="newReview" class="review-section">
+      <h2>Post a Drink Review</h2>
+
+      <input type="text" id="newMeal" placeholder="Meal it was paired with" />
+      <input type="text" id="newDrink" placeholder="Drink name" />
+
+      <!-- STAR RATING -->
+      <label>Rating</label>
+      <div class="star-rating" id="starRating">
+        <span data-value="1">☆</span>
+        <span data-value="2">☆</span>
+        <span data-value="3">☆</span>
+        <span data-value="4">☆</span>
+        <span data-value="5">☆</span>
+      </div>
+
+      <!-- hidden value -->
+      <input type="hidden" id="newRating" />
+
+      <label>Did you like it?</label>
+      <select id="newLiked">
+        <option>Excellent</option>
+        <option>Good</option>
+        <option>Average</option>
+        <option>Poor</option>
+      </select>
+
+      <textarea id="newNotes" placeholder="Notes about the drink"></textarea>
+
+      <!-- SUBMIT BUTTON -->
+      <button class="profile-btn" onclick="postNewReview()">
+        Submit Review
+      </button>
+    </div>
+
+    <!-- ALL REVIEWS -->
+    <div id="reviewsList">
+      <h2>Your Reviews</h2>
+    </div>
+
+  </div>
+
+  <!-- JS FILE -->
+  <script src="review.js"></script>
+
+</body>
+</html>
