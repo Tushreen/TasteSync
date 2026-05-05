@@ -13,7 +13,8 @@ CORS(app, resources={r"/*": {"origins": "*"}})
 
 client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 
-DIARY_FILE = "backend/diary_entries.json"
+# DIARY_FILE = "backend/diary_entries.json"
+DIARY_FILE = "diary_entries.json"
 
 UPLOAD_FOLDER = 'static/uploads/'
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
@@ -97,22 +98,24 @@ Return ONLY valid JSON in this exact format:
         })
 
 
+# Get diary entries
 @app.route("/diary", methods=["GET"])
 def get_diary_entries():
     try:
         with open(DIARY_FILE, "r") as file:
             entries = json.load(file)
-        return jsonify(entries)
     except FileNotFoundError:
         return jsonify([])
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+
+    return jsonify(entries)
 
 
+
+# Save diary entry
 @app.route("/diary", methods=["POST"])
 def save_diary_entry():
     try:
-        new_entry = request.get_json()
+        data = request.get_json()
 
         try:
             with open(DIARY_FILE, "r") as file:
@@ -125,7 +128,24 @@ def save_diary_entry():
         else:
             max_id = 0
 
-        new_entry["id"] = max_id + 1
+        new_entry = {
+            "id": max_id + 1,
+            "user_id": data.get("user_id"),
+
+            "meal": data.get("meal"),
+            "drink": data.get("drink"),
+            "likedIt": data.get("likedIt"),
+            "cost": data.get("cost"),
+            "alcohol": data.get("alcohol"),
+            "abv": data.get("abv"),
+            "notes": data.get("notes"),
+            "ingredients": data.get("ingredients"),
+            "date": data.get("date"),
+
+            "thumbUp": 0,
+            "thumbDown": 0
+        }
+
         entries.append(new_entry)
 
         with open(DIARY_FILE, "w") as file:
@@ -139,6 +159,8 @@ def save_diary_entry():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+
+#  Delete diary entry
 @app.route("/diary/<int:entry_id>", methods=["DELETE"])
 def delete_diary_entry(entry_id):
     try:
@@ -165,28 +187,303 @@ def upload_image():
     
         path = os.path.join(UPLOAD_FOLDER, file.filename)
         file.save(path)
-        return f"File saved to {path}"
+        return jsonify({
+            "imageUrl": f"/static/uploads/{file.filename}"
+        })
     return "No file selected"
 
+# Function use in questionnaire
+@app.route("/recommend-ai", methods=["POST"])
+def generate_ai_drink_recommendations():
+    data = request.json
+
+    prompt = f"""
+        You are a beverage AI expert.
+        
+        User preferences:
+        - Diet: {data.get('diet')}
+        - Drink Type: {data.get('drinkType')}
+        - Alcohol: {data.get('alcohol')}
+        - Cocktail: {data.get('cocktail')}
+        - Style: {data.get('style')}
+        - Flavor: {data.get('flavor')}
+        - Sweet-Bitter Scale: {data.get('scale')}
+        - Temperature: {data.get('temp')}
+        
+        Return ONLY valid JSON:
+        {{
+          "recommendations": [
+            {{
+              "drink": "string",
+              "score": 1,
+              "reason": "string"
+            }},
+            {{
+              "drink": "string",
+              "score": 1,
+              "reason": "string"
+            }},
+            {{
+              "drink": "string",
+              "score": 1,
+              "reason": "string"
+            }}
+          ]
+        }}
+        """
+
+    try:
+        response = client.models.generate_content(
+            model="gemini-2.5-flash",
+            contents=prompt,
+        )
+
+        text = response.text.strip()
+
+        print("RAW GEMINI OUTPUT:\n", text)  # <--- IMPORTANT DEBUG
+
+        text = text.replace("```json", "").replace("```", "").strip()
+
+        result = json.loads(text)
+
+        return jsonify({
+            "mode": "taste_intelligence",
+            "recommendations": result["recommendations"]
+        })
+
+    except Exception as e:
+        print("ERROR:", e)
+
+        return jsonify({
+            "mode": "taste_intelligence",
+            "recommendations": [
+                {
+                    "drink": "Citrus Basil Spritz",
+                    "score": 9,
+                    "reason": "Bright citrus notes with herbal basil freshness. Great for light and refreshing taste preferences."
+                },
+                {
+                    "drink": "Smoked Vanilla Old Fashioned",
+                    "score": 8,
+                    "reason": "Deep smoky sweetness balanced with smooth vanilla warmth. Ideal for bold and classic profiles."
+                },
+                {
+                    "drink": "Hibiscus Ginger Cooler",
+                    "score": 8,
+                    "reason": "Floral hibiscus combined with spicy ginger creates a refreshing and slightly tangy profile."
+                }
+            ]
+        })
+
+
+
+# HELPER FUNCTIONS for generate_ai_drink_recommendations();
+def build_taste_profile(data):
+    prompt = f"""
+        You are a beverage psychology AI.
+        Return ONLY valid JSON.
+        User:
+        - Diet: {data.get('diet')}
+        - Drink Type: {data.get('drinkType')}
+        - Alcohol: {data.get('alcohol')}
+        - Flavor: {data.get('flavor')}
+        - Sweet-Bitter Scale: {data.get('scale')}
+        - Style: {data.get('style')}
+        
+        Format:
+        {{
+          "category": "",
+          "description": "",
+          "recommendation_style": ""
+        }}
+        """
+    response = client.models.generate_content(
+        model="gemini-2.5-flash",
+        contents=prompt,
+    )
+
+    text = response.text.strip()
+    # Clean code blocks
+    text = text.replace("```json", "").replace("```", "").strip()
+
+    json_match = re.search(r"\{[\s\S]*\}", text)
+    if not json_match:
+        raise ValueError("Invalid taste profile JSON")
+
+    return json.loads(json_match.group())
+
+
+# Review
+@app.route("/review", methods=["POST"])
+def add_review():
+    data = request.get_json()
+
+    # Load existing diary entries
+    try:
+        with open(DIARY_FILE, "r") as f:
+            entries = json.load(f)
+    except FileNotFoundError:
+        entries = []
+
+    # Assign new ID
+    max_id = max([entry.get("id", 0) for entry in entries], default=0)
+    new_entry = {
+        "id": max_id + 1,
+        "user_id": data.get("user_id", 0),
+        "meal": data.get("meal", ""),
+        "drink": data.get("drink", ""),
+        "likedIt": data.get("likedIt", ""),
+        "cost": data.get("cost", ""),
+        "rating": data.get("rating", ""),
+        "alcohol": data.get("alcohol", ""),
+        "abv": data.get("abv", ""),
+        "notes": data.get("notes", ""),
+        "ingredients": data.get("ingredients", ""),
+        "date": data.get("date", "")
+    }
+
+    entries.append(new_entry)
+
+    with open(DIARY_FILE, "w") as f:
+        json.dump(entries, f, indent=4)
+
+    return jsonify({"message": "Review saved", "entry": new_entry}), 201
+
+
+# Get post reviews for a user
+@app.route("/reviews/<int:user_id>", methods=["GET"])
+def get_reviews(user_id):
+    try:
+        with open(DIARY_FILE, "r") as f:
+            entries = json.load(f)
+    except FileNotFoundError:
+        entries = []
+
+    user_reviews = [e for e in entries if e.get("user_id") == user_id]
+    return jsonify(user_reviews)
+
+
+
+# Review feedback
+@app.route("/diary/<int:entry_id>/feedback", methods=["POST"])
+def review_feedback(entry_id):
+    data = request.get_json()
+
+    try:
+        with open(DIARY_FILE, "r") as f:
+            entries = json.load(f)
+
+        for entry in entries:
+            if entry["id"] == entry_id:
+                entry["feedback"] = data.get("feedback")
+
+        with open(DIARY_FILE, "w") as f:
+            json.dump(entries, f, indent=4)
+
+        return jsonify({"message": "Feedback updated"})
+    except Exception as e:
+        return jsonify({"error": str(e)})
+
+
+# Count thumb up and thumb down
+@app.route("/diary/<int:entry_id>/thumb", methods=["POST"])
+def update_thumb(entry_id):
+    data = request.get_json()
+    action = data.get("action")
+
+    try:
+        with open(DIARY_FILE, "r") as f:
+            entries = json.load(f)
+
+        for entry in entries:
+            if entry["id"] == entry_id:
+
+                # initialize if missing
+                if "thumbUp" not in entry:
+                    entry["thumbUp"] = 0
+                if "thumbDown" not in entry:
+                    entry["thumbDown"] = 0
+
+                if action == "up":
+                    entry["thumbUp"] += 1
+                elif action == "down":
+                    entry["thumbDown"] += 1
+
+        with open(DIARY_FILE, "w") as f:
+            json.dump(entries, f, indent=4)
+
+        return jsonify({"message": "updated"})
+
+    except Exception as e:
+        return jsonify({"error": str(e)})
+
+
+@app.route("/review/thumb-up/<int:entry_id>", methods=["POST"])
+def thumb_up(entry_id):
+    with open(DIARY_FILE, "r") as f:
+        entries = json.load(f)
+
+    for entry in entries:
+        if entry["id"] == entry_id:
+            entry["thumbUp"] = entry.get("thumbUp", 0) + 1
+
+    with open(DIARY_FILE, "w") as f:
+        json.dump(entries, f, indent=4)
+
+    return jsonify({"message": "thumb up updated"})
+
+
+@app.route("/review/thumb-down/<int:entry_id>", methods=["POST"])
+def thumb_down(entry_id):
+    with open(DIARY_FILE, "r") as f:
+        entries = json.load(f)
+
+    for entry in entries:
+        if entry["id"] == entry_id:
+            entry["thumbDown"] = entry.get("thumbDown", 0) + 1
+
+    with open(DIARY_FILE, "w") as f:
+        json.dump(entries, f, indent=4)
+
+    return jsonify({"message": "thumb down updated"})
+
+
+
+
 # user and profile
-USERS_FILE = "backend/users.json"
+# USERS FILE
+USERS_FILE = os.path.join(os.path.dirname(__file__), "users.json")
+
+# create file if it doesn't exist
+if not os.path.exists(USERS_FILE):
+    with open(USERS_FILE, "w") as f:
+        json.dump([], f)
+
+
+# HELPERS
 def load_users():
     try:
         with open(USERS_FILE, "r") as f:
             return json.load(f)
-    except:
+    except FileNotFoundError:
         return []
+
 
 def save_users(users):
     with open(USERS_FILE, "w") as f:
         json.dump(users, f, indent=4)
 
+
+# REGISTER
 @app.route("/register", methods=["POST"])
 def register():
     data = request.get_json()
 
-    username = data.get("username")
-    password = data.get("password")
+    username = (data.get("username") or "").strip()
+    password = (data.get("password") or "").strip()
+
+    if not username or not password:
+        return jsonify({"error": "Username and password required"}), 400
 
     users = load_users()
 
@@ -205,22 +502,23 @@ def register():
             "email": "",
             "bio": "",
             "favorite_drink": "",
-            "avatar": ""  # store image as base64 string
+            "avatar": ""
         }
     }
 
     users.append(new_user)
     save_users(users)
 
-    return jsonify({"message": "User registered successfully"})
+    return jsonify({"message": "User registered successfully"}), 201
 
-# Login
+
+# LOGIN
 @app.route("/login", methods=["POST"])
 def login():
     data = request.get_json()
 
-    username = data.get("username")
-    password = data.get("password")
+    username = (data.get("username") or "").strip()
+    password = (data.get("password") or "").strip()
 
     users = load_users()
 
@@ -236,16 +534,37 @@ def login():
 
     return jsonify({"error": "Invalid credentials"}), 401
 
+
+# GET PROFILE
 @app.route("/profile/<int:user_id>", methods=["GET"])
 def get_profile(user_id):
     users = load_users()
 
     for user in users:
-        if user["id"] == user_id:
-            return jsonify(user["profile"])
+        if user.get("id") == user_id:
+            return jsonify(user.get("profile", {}))
 
     return jsonify({"error": "User not found"}), 404
 
+
+# UPDATE PROFILE
+@app.route("/upload-profile", methods=["POST"])
+def profile_upload_image():
+    if 'image' not in request.files:
+        return jsonify({"error": "No file"}), 400
+
+    file = request.files['image']
+
+    filename = file.filename
+    path = os.path.join(UPLOAD_FOLDER, filename)
+
+    file.save(path)
+
+    return jsonify({
+        "imageUrl": f"/static/uploads/{filename}"
+    })
+
+# Update Profile
 @app.route("/profile/<int:user_id>", methods=["PUT"])
 def update_profile(user_id):
     data = request.get_json()
@@ -253,18 +572,26 @@ def update_profile(user_id):
 
     for user in users:
         if user["id"] == user_id:
-            user["profile"]["first_name"] = data.get("first_name", "")
-            user["profile"]["last_name"] = data.get("last_name", "")
-            user["profile"]["email"] = data.get("email", "")
-            user["profile"]["bio"] = data.get("bio", "")
-            user["profile"]["favorite_drink"] = data.get("favorite_drink", "")
-            user["profile"]["avatar"] = data.get("avatar", "")
+            profile = user.get("profile", {})
 
+            profile["first_name"] = data.get("first_name", profile.get("first_name", ""))
+            profile["last_name"] = data.get("last_name", profile.get("last_name", ""))
+            profile["email"] = data.get("email", profile.get("email", ""))
+            profile["bio"] = data.get("bio", profile.get("bio", ""))
+            profile["favorite_drink"] = data.get("favorite_drink", profile.get("favorite_drink", ""))
+            profile["avatar"] = data.get("avatar", profile.get("avatar", ""))
+
+            user["profile"] = profile
             save_users(users)
-            return jsonify({"message": "Profile updated"})
+
+            return jsonify({"message": "Profile updated", "profile": profile})
 
     return jsonify({"error": "User not found"}), 404
 
+
+
+
+# CHANGE PASSWORD
 @app.route("/change-password/<int:user_id>", methods=["PUT"])
 def change_password(user_id):
     data = request.get_json()
@@ -272,13 +599,17 @@ def change_password(user_id):
 
     for user in users:
         if user["id"] == user_id:
-            user["password"] = data.get("new_password")
+            user["password"] = data.get("new_password", "")
             save_users(users)
             return jsonify({"message": "Password updated"})
 
     return jsonify({"error": "User not found"}), 404
 
 
-
+# RUN SERVER
 if __name__ == "__main__":
     app.run(debug=True)
+
+
+# if __name__ == "__main__":
+#     app.run(debug=True)

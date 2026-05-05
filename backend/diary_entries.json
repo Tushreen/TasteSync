@@ -10,7 +10,9 @@
         "notes": "n/a",
         "ingredients": "n/a",
         "date": "3/31/2026",
-        "id": 2
+        "id": 1,
+        "thumbUp": 3,
+        "thumbDown": 0
     },
     {
         "meal": "pizza",
@@ -23,6 +25,83 @@
         "notes": "n/a",
         "ingredients": "n/a",
         "date": "3/31/2026",
-        "id": 3
+        "id": 2,
+        "thumbUp": 4,
+        "thumbDown": 1
+    },
+    {
+        "meal": "white toast",
+        "drink": "orange juice",
+        "likedIt": "Excellent",
+        "cost": "0",
+        "rating": "4",
+        "alcohol": "unknown",
+        "abv": "n/a",
+        "notes": "Natural and 100% juice",
+        "ingredients": "user review",
+        "date": "5/4/2026",
+        "id": 3,
+        "thumbUp": 8,
+        "thumbDown": 1
+    },
+    {
+        "meal": "ramen",
+        "drink": "sake",
+        "likedIt": "Good",
+        "cost": "12",
+        "rating": "4",
+        "alcohol": "yes",
+        "abv": "12",
+        "notes": "Smooth and warm pairing, very balanced.",
+        "ingredients": "rice, yeast",
+        "date": "3/31/2026",
+        "id": 4,
+        "thumbUp": 3,
+        "thumbDown": 0
+    },
+    {
+        "meal": "sushi",
+        "drink": "green tea",
+        "likedIt": "Excellent",
+        "cost": "5",
+        "rating": "4.5",
+        "alcohol": "no",
+        "abv": "0",
+        "notes": "Cleans palate perfectly between bites.",
+        "ingredients": "tea leaves",
+        "date": "4/03/2026",
+        "id": 5,
+        "thumbUp": 4,
+        "thumbDown": 0
+    },
+    {
+        "meal": "burger",
+        "drink": "craft beer",
+        "likedIt": "Good",
+        "cost": "15",
+        "rating": "4",
+        "alcohol": "yes",
+        "abv": "6",
+        "notes": "Heavy but satisfying pairing.",
+        "ingredients": "hops, barley",
+        "date": "4/05/2026",
+        "id": 6,
+        "thumbUp": 6,
+        "thumbDown": 3
+    },
+    {
+        "meal": "pasta",
+        "drink": "red wine",
+        "likedIt": "Excellent",
+        "cost": "20",
+        "rating": "5",
+        "alcohol": "yes",
+        "abv": "13",
+        "notes": "Perfect Italian pairing.",
+        "ingredients": "grapes",
+        "date": "4/06/2026",
+        "id": 7,
+        "thumbUp": 9,
+        "thumbDown": 1
     }
 ]

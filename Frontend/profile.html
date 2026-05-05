@@ -4,24 +4,28 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>TasteSync Profile</title>
-  <link rel="stylesheet" href="css/base.css">
-  <link rel="stylesheet" href="css/layout.css">
-  <link rel="stylesheet" href="css/components.css">
-  <link rel="stylesheet" href="css/pages.css">
-  <link rel="stylesheet" href="css/responsive.css">
-  <link rel="stylesheet" href="css/profile.css">
-  <link rel="stylesheet" href="css/auth.css">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/pages.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="css/profile.css">
+    <link rel="stylesheet" href="css/auth.css">
+    <link rel="stylesheet" href="css/questionnaire.css">
+    <link rel="stylesheet" href="css/review.css">
 </head>
 <body>
   <div class="container">
 
     <div class="nav-links">
-      <a href="index.html">Home</a>
-      <a href="diary.html">Drink Diary</a>
-      <a href="categories.html">Categories</a>
-      <a href="faq.html">FAQ / Contact</a>
-      <a href="profile.html" class="active-link">Profile</a>
-      <a href="auth.html">Login</a>
+        <a href="index.html">Home</a>
+        <a href="questionnaire.html">Questionnaire</a>
+        <a href="diary.html">Drink Diary</a>
+        <a href="faq.html">FAQ / Contact</a>
+        <a href="categories.html">Categories</a>
+        <a href="profile.html">Profile</a>
+        <a href="auth.html">Login</a>
+        <a href="review.html">Review</a>
     </div>
 
     <h1>My Profile</h1>
@@ -34,7 +38,7 @@
     </div>
 
     <!-- FORM -->
-    <input id="username" placeholder="Username" disabled />
+    <input id="usernameDisplay" placeholder="Username" disabled />
     <input id="first_name" placeholder="First Name" />
     <input id="last_name" placeholder="Last Name" />
     <input id="email" placeholder="Email" />
@@ -42,7 +46,18 @@
     <textarea id="bio" placeholder="Your bio"></textarea>
     <input id="favorite_drink" placeholder="Favorite drink" />
 
-    <button class="profile-btn" onclick="updateProfile()">Save Profile</button>
+      <div class="profile-actions">
+          <button class="profile-btn" onclick="updateProfile()">Save Profile</button>
+          <button class="profile-btn logout-btn" onclick="logout()">Logout</button>
+      </div>
+
+      <hr>
+        <h2>Change Password</h2>
+        <input type="password" id="newPassword" placeholder="New Password" />
+        <input type="password" id="confirmPassword" placeholder="Confirm Password" />
+        <button class="profile-btn" onclick="changePassword()">
+          Change Password
+        </button>
 
   </div>
 
