@@ -16,7 +16,7 @@ where choosing the right drink matters.
 - profile/ profile setting (Done)
 - homepage (Done)
 - image upload (Done)
-- Review past generated options (Done)
+- Review past generated options 
 - post drink review/preference/ how much you liked it (Done)
 - drink diary (done)
 - FAQ/contacts (done)
